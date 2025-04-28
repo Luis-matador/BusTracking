@@ -1,56 +1,71 @@
 package model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
 public class GPSData {
-    private int id;
-    private String busId;
-    private LocalDateTime timestamp;
-    private double latitude;
-    private double longitude;
-    private double speed;
 
-    // Necesario para frameworks
-    public GPSData() {}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    private String busId; // Identificador único del autobús.
 
-    public GPSData(int id, String busId, LocalDateTime timestamp, double latitude, double longitude, double speed) {
+    private Double latitude; // Latitud (coordenada GPS).
+
+    private Double longitude; // Longitud (coordenada GPS).
+
+    private Double speed; // Velocidad del autobús en km/h.
+
+    private LocalDateTime timestamp; // Momento en que se capturaron los datos.
+
+    // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getBusId() {
+        return busId;
+    }
+
+    public void setBusId(String busId) {
         this.busId = busId;
-        this.timestamp = timestamp;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
+    }
+
+    public Double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(Double speed) {
         this.speed = speed;
     }
 
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 
-    public int getId() { return id; }
-
-    public void setId(int id) { this.id = id; }
-
-    public String getBusId() { return busId; }
-
-    public void setBusId(String busId) { this.busId = busId; }
-
-    public LocalDateTime getTimestamp() { return timestamp; }
-
-    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
-
-    public double getLatitude() { return latitude; }
-
-    public void setLatitude(double latitude) { this.latitude = latitude; }
-
-    public double getLongitude() { return longitude; }
-
-    public void setLongitude(double longitude) { this.longitude = longitude; }
-
-    public double getSpeed() { return speed; }
-
-    public void setSpeed(double speed) { this.speed = speed; }
-
-
-    @Override
-    public String toString() {
-        return "GPSData{ id=" + getId() + ", busId=" + getBusId() + ", timestamp=" + getTimestamp() + ", latitude=" + getLatitude() + ", longitude=" + getLongitude() + ", speed=" + getSpeed()+")";
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }
