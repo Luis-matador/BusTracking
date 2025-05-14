@@ -1,4 +1,4 @@
-package com.busTracking.Servicios;
+package com.busTracking.servicios;
 
 import com.busTracking.entidades.Conductor;
 

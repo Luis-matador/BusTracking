@@ -1,4 +1,4 @@
-package com.busTracking.Servicios;
+package com.busTracking.servicios;
 
 import com.busTracking.entidades.Parada;
 
@@ -12,7 +12,7 @@ public interface ParadaServicio {
 
     List<Parada> obtenerTodasLasParadas();
 
-    List<Parada> obtenerParadaPorRuta(Long rutaId);
+    List<Parada> obtenerParadasPorRuta(Long rutaId);
 
     List<Parada> obtenerParadasPorRutaOrdenadas(Long rutaId);
 
@@ -22,5 +22,7 @@ public interface ParadaServicio {
 
     void eliminarParada(Long id);
 
+    Parada actualizarParada(Long id, Parada parada);
 
+    void reordenarParadasEnRuta(Long rutaId, List<Long> nuevosOrdenes);
 }

@@ -1,4 +1,4 @@
-package com.busTracking.Servicios;
+package com.busTracking.servicios;
 import com.busTracking.entidades.Bus;
 
 import java.util.List;
@@ -26,4 +26,6 @@ public interface BusServicio {
     List<Bus> buscarBusesPorConductorId(Long conductorId);
 
     Long contarBusesPorRuta(Long rutaId);
+
+    boolean tieneBusesDisponibles(Long rutaId);
 }

@@ -1,7 +1,8 @@
-package com.busTracking.Servicios;
+package com.busTracking.servicios;
 
 import com.busTracking.entidades.Bus;
 import com.busTracking.repositorios.BusRepositorio;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,13 +19,19 @@ public class BusServicioImpl implements BusServicio {
 
     @Override
     public Bus crearBus(Bus bus) {
+
+        if (bus.getMatricula() != null && !bus.getMatricula().isEmpty()) {
+            List<Bus> busesExistentes = busRepositorio.findByMatricula(bus.getMatricula());
+            if (!busesExistentes.isEmpty()) {
+                throw new IllegalArgumentException("Ya existe un bus con la matrícula: " + bus.getMatricula());
+            }
+        }
         return busRepositorio.save(bus);
     }
 
     @Override
     public Bus obtenerBusPorId(Long id) {
-        return busRepositorio.findById(id)
-                .orElseThrow(() -> new RuntimeException("Bus no encontrado con ID: " + id));
+        return busRepositorio.findById(id).orElseThrow(() -> new EntityNotFoundException("Bus con ID: " + id + " no encontrado"));
     }
 
     @Override
@@ -38,24 +45,48 @@ public class BusServicioImpl implements BusServicio {
 
         if (optionalBus.isPresent()) {
             Bus busExistente = optionalBus.get();
+
             busExistente.setMarca(bus.getMarca());
             busExistente.setModelo(bus.getModelo());
             busExistente.setCapacidad(bus.getCapacidad());
-            busExistente.setMatricula(bus.getMatricula());
+
+            if (bus.getMatricula() != null && !bus.getMatricula().equals(busExistente.getMatricula())) {
+                List<Bus> busesConMismaMatricula = busRepositorio.findByMatricula(bus.getMatricula());
+                if (!busesConMismaMatricula.isEmpty() &&
+                        !id.equals(busesConMismaMatricula.get(0).getId())) {
+                    throw new IllegalArgumentException("Ya existe un bus con la matrícula: " + bus.getMatricula());
+                }
+                busExistente.setMatricula(bus.getMatricula());
+            }
+
+
             busExistente.setRuta(bus.getRuta());
             busExistente.setConductor(bus.getConductor());
+
+
+            if (bus.getDatosGPS() != null) {
+                busExistente.setDatosGPS(bus.getDatosGPS());
+            }
+
+            if (bus.getPasajeros() != null) {
+                busExistente.setPasajeros(bus.getPasajeros());
+            }
+
             return busRepositorio.save(busExistente);
+
         } else {
-            throw new RuntimeException("Bus no encontrado con ID: " + id);
+
+            throw new EntityNotFoundException("Bus con ID: " + id + " no encontrado");
         }
     }
+
 
     @Override
     public void eliminarBus(Long id) {
         if (busRepositorio.existsById(id)) {
             busRepositorio.deleteById(id);
         } else {
-            throw new RuntimeException("Bus no encontrado con ID: " + id);
+            throw new EntityNotFoundException("Bus no encontrado con ID: " + id);
         }
     }
 
@@ -87,5 +118,11 @@ public class BusServicioImpl implements BusServicio {
     @Override
     public Long contarBusesPorRuta(Long rutaId) {
         return busRepositorio.contarBusesPorRuta(rutaId);
+    }
+
+    @Override
+    public boolean tieneBusesDisponibles(Long rutaId) {
+        Long cantidad = contarBusesPorRuta(rutaId);
+        return cantidad > 0;
     }
 }

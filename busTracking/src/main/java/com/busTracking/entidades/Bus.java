@@ -8,7 +8,7 @@ public class Bus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String marca;
     private String modelo;
