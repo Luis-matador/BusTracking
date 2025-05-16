@@ -1,5 +1,6 @@
 package com.busTracking.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +20,7 @@ public class Parada {
     private Integer orden;          // Orden en que aparece en la ruta
 
     @ManyToOne // Relación con la ruta a la que pertenece la parada
+    @JsonIgnoreProperties("paradas")
     private Ruta rutaAsociada;
 
     // Getters y Setters

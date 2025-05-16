@@ -1,5 +1,7 @@
 package com.busTracking.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -16,9 +18,11 @@ public class Bus {
     private String matricula;
 
     @OneToOne(mappedBy = "busAsignado") // Relación con el conductor
+    @JsonIgnoreProperties("busAsignado")
     private Conductor conductor;
 
     @ManyToOne // Relación con la ruta
+    @JsonIgnoreProperties("buses")
     private Ruta ruta;
 
     @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true) // Relación con datos GPS

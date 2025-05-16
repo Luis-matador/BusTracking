@@ -1,5 +1,8 @@
 package com.busTracking.entidades;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -14,9 +17,11 @@ public class Ruta {
     private String info;       // Información de la ruta
 
     @OneToMany(mappedBy = "rutaAsociada", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("rutaAsociada")
     private List<Parada> paradas;  // Paradas asociadas a esta ruta
 
     @OneToMany(mappedBy = "ruta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("ruta")
     private List<Bus> buses;      // Autobuses asignados a esta ruta
 
     // Getters y Setters
