@@ -19,6 +19,7 @@ public class GPSData {
     private Double longitud;        // Longitud de la ubicación
     private LocalDateTime tiempo;   // Fecha y hora del registro
     private Double velocidad;       // Velocidad del autobús (km/h)
+    private Double direccion;       // Dirección en grados (0-360)
 
     @ManyToOne // Relación con el autobús
     private Bus bus;
@@ -62,6 +63,14 @@ public class GPSData {
 
     public void setVelocidad(Double velocidad) {
         this.velocidad = velocidad;
+    }
+
+    public Double getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(Double direccion) {
+        this.direccion = direccion;
     }
 
     public Bus getBus() {

@@ -2,6 +2,8 @@ package com.busTracking.servicios;
 
 import com.busTracking.entidades.Bus;
 
+import java.util.List;
+
 public interface SimulacionServicio {
 
 
@@ -12,4 +14,6 @@ public interface SimulacionServicio {
 
 
     void detenerSimulacion();
+
+    List<Bus> listarTodosLosBuses();
 }

@@ -1,0 +1,137 @@
+#map {
+  height: 100vh;
+  width: 100%;
+  z-index: 1;
+}
+
+.map-placeholder {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  font-size: 1.5em;
+  color: #666;
+}
+
+.controls-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  width: 250px;
+}
+
+.form-group {
+  margin-bottom: 10px;
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+}
+
+.seguimiento-activo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: #e6f7ff;
+  border-radius: 4px;
+  margin-top: 10px;
+  
+  span {
+    font-weight: bold;
+  }
+  
+  button {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #ff7875;
+    }
+  }
+}
+
+.custom-div-icon {
+  background: none;
+  border: none;
+  
+  .bus-marker {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    
+    .bus-icon {
+      width: 24px;
+      height: 24px;
+      filter: brightness(0) invert(1);
+    }
+    
+    .linea-numero {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: white;
+      color: black;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    }
+  }
+}
+
+.bus-popup {
+  min-width: 200px;
+  
+  h3 {
+    margin-top: 0;
+    color: #1890ff;
+  }
+  
+  button.seguir-bus {
+    background-color: #1890ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    margin-top: 10px;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    
+    &:hover {
+      background-color: #40a9ff;
+    }
+  }
+}

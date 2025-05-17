@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Mi Aplicación de Mapas con Leaflet</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+  <!-- Estilos de Leaflet desde CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+        crossorigin=""/>
+  <script>
+  window.global = window;
+</script>
+
+  <!-- Script de Leaflet desde CDN -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+          crossorigin=""></script>
+  
+  <!-- Estilos adicionales para arreglar problemas comunes -->
+  <style>
+    /* Asegura que el contenedor del mapa tenga altura */
+    .leaflet-container {
+      height: 100%;
+      width: 100%;
+    }
+    
+    /* Corrige problemas de visualización en algunos navegadores */
+    .leaflet-tile-container img {
+      width: auto !important;
+      height: auto !important;
+    }
+  </style>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<div *ngIf="isBrowser">
+  <!-- Controles del mapa -->
+  <div class="controls-container" *ngIf="mapaCargado">
+    <form [formGroup]="filtroForm">
+      <div class="form-group">
+        <label for="linea-filter">Filtrar por línea:</label>
+        <select id="linea-filter" formControlName="linea">
+          <option value="todos">Todas las líneas</option>
+          <option *ngFor="let linea of lineasDisponibles" [value]="linea">
+            Línea {{ linea }}
+          </option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="bus-seguimiento">Seguir bus:</label>
+        <select id="bus-seguimiento" formControlName="seguimientoBus">
+          <option [ngValue]="null">Ninguno</option>
+          <option *ngFor="let bus of busesDisponibles" [ngValue]="bus.id">
+            Bus {{ bus.nombre }} (Línea {{ bus.linea }})
+          </option>
+        </select>
+      </div>
+    </form>
+    
+    <div class="seguimiento-activo" *ngIf="seguimientoActivado">
+      <span>Siguiendo bus {{ getBusNombre(busSeleccionadoId) }}</span>
+      <button (click)="desactivarSeguimiento()">Detener</button>
+    </div>
+  </div>
+  
+  <!-- Contenedor del mapa -->
+  <div id="map"></div>
+</div>
+
+<div *ngIf="!isBrowser" class="map-placeholder">
+  Cargando mapa...
+</div>

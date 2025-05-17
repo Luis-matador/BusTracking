@@ -1,13 +1,17 @@
 package com.busTracking.servicios;
 
+import com.busTracking.dto.GPSDataDTO;
 import com.busTracking.entidades.GPSData;
 import com.busTracking.repositorios.BusRepositorio;
 import com.busTracking.repositorios.GPSDataRepositorio;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,10 +19,12 @@ public class GPSDataServicioImpl implements GPSDataServicio {
 
     private final GPSDataRepositorio gpsDataRepositorio;
     private final BusRepositorio busRepositorio;
+    private final SimpMessagingTemplate messagingTemplate;
 
-    public GPSDataServicioImpl(GPSDataRepositorio gpsDataRepositorio, BusRepositorio busRepositorio) {
+    public GPSDataServicioImpl(GPSDataRepositorio gpsDataRepositorio, BusRepositorio busRepositorio, SimpMessagingTemplate messagingTemplate) {
         this.gpsDataRepositorio = gpsDataRepositorio;
         this.busRepositorio = busRepositorio;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Override
@@ -26,22 +32,42 @@ public class GPSDataServicioImpl implements GPSDataServicio {
     public GPSData guardarGPSData(GPSData gpsData) {
         if (gpsData.getBus() != null) {
             Long busId = gpsData.getBus().getId();
-            if (busId != null) {
-                if (!busRepositorio.existsById(busId)) {
-                    throw new EntityNotFoundException("No se encontró bus con ID: " + busId);
-                }
-            } else {
-                throw new IllegalArgumentException("El bus proporcionado no tiene un ID válido");
+            if (!busRepositorio.existsById(busId)) {
+                throw new EntityNotFoundException("No se encontró bus con ID: " + busId);
             }
         }
-
         if (gpsData.getTiempo() == null) {
             gpsData.setTiempo(LocalDateTime.now());
         }
-
         validarDatosGPS(gpsData);
 
-        return gpsDataRepositorio.save(gpsData);
+        GPSData nuevoGPSData = gpsDataRepositorio.save(gpsData);
+
+        if (nuevoGPSData.getBus() != null) {
+            GPSDataDTO dto = new GPSDataDTO(nuevoGPSData);
+            messagingTemplate.convertAndSend("/topic/posicion-bus/" + nuevoGPSData.getBus().getId(), dto);
+        }
+
+        return nuevoGPSData;
+    }
+
+
+
+    @Scheduled(fixedRate = 5000)
+    public void enviarActualizacionesPosicion() {
+        try {
+            List<GPSData> posicionesBuses = obtenerUltimoGPSDataParaTodosLosBuses();
+
+            List<GPSDataDTO> dtos = new ArrayList<>();
+            for (GPSData gpsData : posicionesBuses) {
+                dtos.add(new GPSDataDTO(gpsData));
+            }
+
+            messagingTemplate.convertAndSend("/topic/posiciones-buses", dtos);
+        } catch (Exception e) {
+            System.err.println("Error al enviar actualizaciones periódicas: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 
@@ -67,6 +93,39 @@ public class GPSDataServicioImpl implements GPSDataServicio {
         }
 
         return ultimoGPSData;
+    }
+
+    @Override
+    public GPSData obtenerUltimaPosicionPorBusId(Long busId) {
+        try {
+            if (!busRepositorio.existsById(busId)) {
+                System.err.println("No se encontró bus con ID: " + busId);
+                return null;
+            }
+
+            // Primero intentamos usar el método existente
+            try {
+                return gpsDataRepositorio.findLastGPSDataForBus(busId);
+            } catch (Exception e) {
+
+                return gpsDataRepositorio.findTopByBusIdOrderByTiempoDesc(busId);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al obtener última posición para bus " + busId + ": " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<GPSData> obtenerUltimasPosicionesPorBuses(List<Long> busIds) {
+        List<GPSData> resultado = new ArrayList<>();
+        for (Long busId : busIds) {
+            GPSData ultimaPosicion = obtenerUltimaPosicionPorBusId(busId);
+            if (ultimaPosicion != null) {
+                resultado.add(ultimaPosicion);
+            }
+        }
+        return resultado;
     }
 
     @Override
@@ -99,8 +158,7 @@ public class GPSDataServicioImpl implements GPSDataServicio {
     @Transactional
     @Override
     public GPSData actualizarGPSData(Long id, GPSData gpsData) {
-        GPSData gpsDataExistente = gpsDataRepositorio.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("GPSData con id " + id + " no encontrada"));
+        GPSData gpsDataExistente = gpsDataRepositorio.findById(id).orElseThrow(() -> new EntityNotFoundException("GPSData con id " + id + " no encontrada"));
 
         if (gpsData.getLatitud() != null) {
             gpsDataExistente.setLatitud(gpsData.getLatitud());
@@ -114,27 +172,35 @@ public class GPSDataServicioImpl implements GPSDataServicio {
             gpsDataExistente.setVelocidad(gpsData.getVelocidad());
         }
 
+        if (gpsData.getDireccion() != null) {
+            gpsDataExistente.setDireccion(gpsData.getDireccion());
+        }
+
         if (gpsData.getTiempo() != null) {
             gpsDataExistente.setTiempo(gpsData.getTiempo());
         }
 
         if (gpsData.getBus() != null) {
             Long busId = gpsData.getBus().getId();
-            if (busId != null) {
-                if (!busRepositorio.existsById(busId)) {
-                    throw new EntityNotFoundException("No se encontró bus con ID: " + busId);
-                }
-                gpsDataExistente.setBus(gpsData.getBus());
-            } else {
-                throw new IllegalArgumentException("El bus proporcionado no tiene un ID válido");
+            if (!busRepositorio.existsById(busId)) {
+                throw new EntityNotFoundException("No se encontró bus con ID: " + busId);
             }
+            gpsDataExistente.setBus(gpsData.getBus());
         }
 
         validarDatosGPS(gpsDataExistente);
 
-        return gpsDataRepositorio.save(gpsDataExistente);
-    }
+        GPSData gpsActualizado = gpsDataRepositorio.save(gpsDataExistente);
 
+        // Enviamos notificación de posición GPS actualizada como DTO
+        if (gpsActualizado.getBus() != null) {
+            // Creamos un DTO para evitar problemas de LazyInitializationException
+            GPSDataDTO dto = new GPSDataDTO(gpsActualizado);
+            messagingTemplate.convertAndSend("/topic/posicion-bus/" + gpsActualizado.getBus().getId(), dto);
+        }
+
+        return gpsActualizado;
+    }
 
     @Transactional
     @Override
@@ -144,7 +210,6 @@ public class GPSDataServicioImpl implements GPSDataServicio {
         }
         gpsDataRepositorio.deleteById(id);
     }
-
 
     private void validarDatosGPS(GPSData gpsData) {
         if (gpsData.getLatitud() != null && (gpsData.getLatitud() < -90 || gpsData.getLatitud() > 90)) {
@@ -157,6 +222,10 @@ public class GPSDataServicioImpl implements GPSDataServicio {
 
         if (gpsData.getVelocidad() != null && gpsData.getVelocidad() < 0) {
             throw new IllegalArgumentException("La velocidad no puede ser negativa");
+        }
+
+        if (gpsData.getDireccion() != null && (gpsData.getDireccion() < 0 || gpsData.getDireccion() > 360)) {
+            throw new IllegalArgumentException("La dirección debe estar entre 0 y 360 grados");
         }
     }
 }

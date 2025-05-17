@@ -10,6 +10,8 @@ import java.util.List;
 
 public interface GPSDataRepositorio extends JpaRepository<GPSData, Long> {
 
+    GPSData findTopByBusIdOrderByTiempoDesc(Long busId);
+
 
     @Query("SELECT g FROM GPSData g WHERE g.tiempo = " +
             "(SELECT MAX(g2.tiempo) FROM GPSData g2 WHERE g2.bus.id = g.bus.id)")

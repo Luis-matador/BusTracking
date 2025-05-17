@@ -5,36 +5,47 @@ import com.busTracking.entidades.Parada;
 
 import java.util.List;
 
-
 public class EstadoSimulacion {
     private final Bus bus;
     private final List<Parada> paradas;
     private int indiceParadaActual = 0;
     private double progresoSegmento = 0.0; // 0.0 a 1.0
+    private boolean llegadaParada = false;
 
     public EstadoSimulacion(Bus bus, List<Parada> paradas) {
         this.bus = bus;
         this.paradas = paradas;
     }
 
+    public void actualizarProgreso(int segundos, double velocidadKmh) {
+        // Convertir velocidad de km/h a metros/segundo
+        double velocidadMs = velocidadKmh / 3.6;
 
-    public void actualizarProgreso(int segundosTranscurridos, double velocidadPromedio) {
-        Parada actual = getParadaActual();
-        Parada siguiente = getParadaSiguiente();
+        // Calcular distancia recorrida en este intervalo
+        double distanciaRecorrida = velocidadMs * segundos;
 
-        double distanciaKm = calcularDistanciaKm(
-                actual.getLatitud(), actual.getLongitud(),
-                siguiente.getLatitud(), siguiente.getLongitud());
+        // Obtener distancia total del segmento actual
+        double distanciaSegmento = calcularDistanciaEnMetros(
+                getParadaActual().getLatitud(), getParadaActual().getLongitud(),
+                getParadaSiguiente().getLatitud(), getParadaSiguiente().getLongitud());
 
-        double tiempoHoras = distanciaKm / velocidadPromedio;
+        // Actualizar progreso en este segmento
+        double progresoAdicional = distanciaRecorrida / distanciaSegmento;
+        progresoSegmento += progresoAdicional;
 
-        double tiempoSegundos = tiempoHoras * 3600;
+        // Resetear bandera de llegada
+        llegadaParada = false;
 
-        progresoSegmento += segundosTranscurridos / tiempoSegundos;
-
+        // Si hemos completado el segmento, avanzar a la siguiente parada
         if (progresoSegmento >= 1.0) {
+            // Avanzar a la siguiente parada
             indiceParadaActual = (indiceParadaActual + 1) % paradas.size();
+
+            // Reiniciar progreso para el nuevo segmento
             progresoSegmento = 0.0;
+
+            // Marcar que hemos llegado a una parada
+            llegadaParada = true;
         }
     }
 
@@ -55,6 +66,22 @@ public class EstadoSimulacion {
         return progresoSegmento;
     }
 
+    public int getIndiceParadaActual() {
+        return indiceParadaActual;
+    }
+
+    public boolean isLlegadaParada() {
+        return llegadaParada;
+    }
+
+    public void setLlegadaParada(boolean llegadaParada) {
+        this.llegadaParada = llegadaParada;
+    }
+
+    private double calcularDistanciaEnMetros(double lat1, double lon1, double lat2, double lon2) {
+        // Convertimos la distancia en km a metros multiplicando por 1000
+        return calcularDistanciaKm(lat1, lon1, lat2, lon2) * 1000;
+    }
 
     private double calcularDistanciaKm(double lat1, double lon1, double lat2, double lon2) {
         final int RADIO_TIERRA = 6371;
