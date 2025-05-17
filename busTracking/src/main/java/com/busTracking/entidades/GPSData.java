@@ -1,5 +1,6 @@
 package com.busTracking.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,7 @@ public class GPSData {
     private Double direccion;       // Dirección en grados (0-360)
 
     @ManyToOne // Relación con el autobús
+    @JsonIgnore
     private Bus bus;
 
     // Getters y Setters
