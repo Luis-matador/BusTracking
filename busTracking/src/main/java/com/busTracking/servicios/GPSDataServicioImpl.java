@@ -70,6 +70,16 @@ public class GPSDataServicioImpl implements GPSDataServicio {
         }
     }
 
+    @Scheduled(fixedRate = 30000) // Cada 30 segundos
+    public void limpiarDatosGPSPeriodicamente() {
+        try {
+            gpsDataRepositorio.deleteAll();
+            System.out.println("Todos los datos de la tabla GPSData han sido eliminados.");
+        } catch (Exception e) {
+            System.err.println("Error al limpiar los datos de GPSData: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public GPSData obtenerGPSDataPorId(Long id) {
@@ -102,8 +112,6 @@ public class GPSDataServicioImpl implements GPSDataServicio {
                 System.err.println("No se encontró bus con ID: " + busId);
                 return null;
             }
-
-            // Primero intentamos usar el método existente
             try {
                 return gpsDataRepositorio.findLastGPSDataForBus(busId);
             } catch (Exception e) {
