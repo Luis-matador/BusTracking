@@ -28,9 +28,6 @@ public class Bus {
     @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true) // Relación con datos GPS
     private List<GPSData> datosGPS;
 
-    @OneToMany // Relación con pasajeros (opcional)
-    private List<Pasajero> pasajeros;
-
     // Getters y Setters
     public long getId() {
         return id;
@@ -94,13 +91,5 @@ public class Bus {
 
     public void setDatosGPS(List<GPSData> datosGPS) {
         this.datosGPS = datosGPS;
-    }
-
-    public List<Pasajero> getPasajeros() {
-        return pasajeros;
-    }
-
-    public void setPasajeros(List<Pasajero> pasajeros) {
-        this.pasajeros = pasajeros;
     }
 }

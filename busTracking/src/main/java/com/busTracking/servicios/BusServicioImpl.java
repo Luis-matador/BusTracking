@@ -68,9 +68,6 @@ public class BusServicioImpl implements BusServicio {
                 busExistente.setDatosGPS(bus.getDatosGPS());
             }
 
-            if (bus.getPasajeros() != null) {
-                busExistente.setPasajeros(bus.getPasajeros());
-            }
 
             return busRepositorio.save(busExistente);
 

@@ -55,17 +55,13 @@ public class GPSData {
         return tiempo;
     }
 
-    public void setTiempo(LocalDateTime tiempo) {
-        this.tiempo = tiempo;
-    }
+    public void setTiempo(LocalDateTime tiempo) {this.tiempo = tiempo;}
 
     public Double getVelocidad() {
         return velocidad;
     }
 
-    public void setVelocidad(Double velocidad) {
-        this.velocidad = velocidad;
-    }
+    public void setVelocidad(Double velocidad) {this.velocidad = velocidad;}
 
     public Double getDireccion() {
         return direccion;

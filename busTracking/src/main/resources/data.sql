@@ -1,0 +1,43 @@
+-- Insertar datos en la tabla Bus
+INSERT INTO bus (id, capacidad, marca, matricula, modelo, ruta_id) VALUES
+(1, 85, 'Mercedes-Benz', 'SE-1122-TUS', 'Citaro Hybrid', 1),
+(2, 110, 'MAN', 'SE-2727-TUS', 'Lion''s City G', 2),
+(3, 60, 'Iveco', 'SE-0404-TUS', 'Urbanway', 3);
+
+-- Insertar datos en la tabla Conductor
+INSERT INTO conductor (id, apellido, dni, nombre, tel, bus_asignado_id) VALUES
+(1, 'García', '12345678A', 'Juan', '955123456', 1),
+(2, 'Rodríguez', '87654321B', 'María', '601234567', 2),
+(3, 'Martínez', '11223344C', 'Carlos', '602345678', 3);
+
+-- Insertar datos en la tabla Parada
+INSERT INTO parada (id, latitud, longitud, nombre, orden, ruta_asociada_id) VALUES
+(1, 37.3794, -5.9868, 'Prado San Sebastián', 1, 1),
+(2, 37.3919, -5.9733, 'Santa Justa', 2, 1),
+(3, 37.3964, -5.965, 'Kansas City', 3, 1),
+(4, 37.4006, -5.9548, 'Avenida de Andalucía', 4, 1),
+(5, 37.4033, -5.9331, 'Ciudad de Chiva', 5, 1),
+(6, 37.4018, -5.9265, 'Avenida de las Ciencias', 6, 1),
+(7, 37.4039, -5.9198, 'Centro Comercial Alcampo', 7, 1),
+(8, 37.407, -5.915, 'Sevilla Este', 8, 1),
+(9, 37.3936, -5.9992, 'Plaza del Duque', 1, 2),
+(10, 37.3973, -5.9901, 'Puerta Osario', 2, 2),
+(11, 37.3927, -5.9834, 'Puerta Carmona', 3, 2),
+(12, 37.3898, -5.9742, 'Avenida Luis Montoto', 4, 2),
+(13, 37.3958, -5.9484, 'Avenida del Greco', 5, 2),
+(14, 37.398, -5.9401, 'Palacio de Congresos', 6, 2),
+(15, 37.4051, -5.929, 'Emilio Lemos', 7, 2),
+(16, 37.4083, -5.9232, 'Terminal Secoya', 8, 2),
+(17, 37.4018, -5.9265, 'Avenida de las Ciencias', 1, 3),
+(18, 37.4051, -5.929, 'Emilio Lemos', 2, 3),
+(19, 37.4069, -5.921, 'Centro Comercial Zona Este', 3, 3),
+(20, 37.4031, -5.9177, 'Avenida Séneca', 4, 3),
+(21, 37.3977, -5.9221, 'Avenida de la Aeronáutica', 5, 3),
+(22, 37.4001, -5.9288, 'Ciudad de Liria', 6, 3),
+(23, 37.4018, -5.9265, 'Avenida de las Ciencias (Final)', 7, 3);
+
+-- Insertar datos en la tabla Ruta
+INSERT INTO ruta (id, info, nombre) VALUES
+(1, 'Conecta el centro de Sevilla con Sevilla Este pasando por Santa Justa', 'Línea 22: Prado San Sebastián - Sevilla Este'),
+(2, 'Enlaza el centro con la zona norte de Sevilla Este', 'Línea 27: Plaza del Duque - Sevilla Este'),
+(3, 'Recorrido circular dentro del barrio de Sevilla Este', 'Línea B4: Circular Sevilla Este');
