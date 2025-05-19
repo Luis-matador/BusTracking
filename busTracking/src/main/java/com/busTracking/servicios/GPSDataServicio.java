@@ -27,4 +27,8 @@ public interface GPSDataServicio {
     GPSData actualizarGPSData(Long id, GPSData gpsData);
 
     void eliminarGPSData(Long id);
+
+    GPSData obtenerUltimaUbicacionBus(Long busId);
+
+
 }

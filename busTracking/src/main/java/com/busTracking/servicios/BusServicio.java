@@ -1,5 +1,6 @@
 package com.busTracking.servicios;
 import com.busTracking.entidades.Bus;
+import com.busTracking.entidades.Parada;
 
 import java.util.List;
 
@@ -28,4 +29,6 @@ public interface BusServicio {
     Long contarBusesPorRuta(Long rutaId);
 
     boolean tieneBusesDisponibles(Long rutaId);
+
+    Parada encontrarSiguienteParada(List<Parada> paradasRuta, Double latitud, Double longitud);
 }

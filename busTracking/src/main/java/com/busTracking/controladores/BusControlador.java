@@ -1,7 +1,11 @@
 package com.busTracking.controladores;
 
 import com.busTracking.entidades.Bus;
+import com.busTracking.entidades.GPSData;
+import com.busTracking.entidades.Parada;
 import com.busTracking.servicios.BusServicio;
+import com.busTracking.servicios.GPSDataServicio;
+import com.busTracking.servicios.ParadaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +18,14 @@ import java.util.List;
 public class BusControlador {
 
     private final BusServicio busServicio;
+    private final ParadaServicio paradaServicio;
+    private final GPSDataServicio gpsDataServicio;
 
     @Autowired
-    public BusControlador(BusServicio busServicio) {
+    public BusControlador(BusServicio busServicio, ParadaServicio paradaServicio, GPSDataServicio gpsDataServicio) {
         this.busServicio = busServicio;
+        this.paradaServicio = paradaServicio;
+        this.gpsDataServicio = gpsDataServicio;
     }
 
     @PostMapping
@@ -98,5 +106,36 @@ public class BusControlador {
     public ResponseEntity<Boolean> verificarDisponibilidadBuses(@PathVariable Long rutaId) {
         boolean hayDisponibles = busServicio.tieneBusesDisponibles(rutaId);
         return ResponseEntity.ok(hayDisponibles);
+    }
+
+    @GetMapping("/{busId}/destino")
+    public ResponseEntity<Parada> obtenerDestinoBus(@PathVariable Long busId) {
+        try {
+            Bus bus = busServicio.obtenerBusPorId(busId);
+            if (bus == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Obtener la siguiente parada de la ruta del bus
+            Long rutaId = bus.getRuta().getId();
+            List<Parada> paradasRuta = paradaServicio.obtenerParadasPorRutaOrdenadas(rutaId);
+
+            // Obtener la última posición GPS del bus para determinar la parada más cercana
+            GPSData ultimaPosicion = gpsDataServicio.obtenerUltimaUbicacionBus(busId);
+            if (ultimaPosicion == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Encontrar la siguiente parada basada en la posición actual
+            Parada paradaDestino = busServicio.encontrarSiguienteParada(paradasRuta, ultimaPosicion.getLatitud(), ultimaPosicion.getLongitud()
+            );
+
+            if (paradaDestino != null) {
+                return ResponseEntity.ok(paradaDestino);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 }

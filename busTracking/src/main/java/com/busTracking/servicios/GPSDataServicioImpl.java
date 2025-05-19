@@ -71,9 +71,11 @@ public class GPSDataServicioImpl implements GPSDataServicio {
     }
 
     @Scheduled(fixedRate = 30000) // Cada 30 segundos
+    @Transactional
     public void limpiarDatosGPSPeriodicamente() {
         try {
             gpsDataRepositorio.deleteAll();
+            gpsDataRepositorio.resetAutoIncrement();
             System.out.println("Todos los datos de la tabla GPSData han sido eliminados.");
         } catch (Exception e) {
             System.err.println("Error al limpiar los datos de GPSData: " + e.getMessage());
@@ -122,6 +124,10 @@ public class GPSDataServicioImpl implements GPSDataServicio {
             System.err.println("Error al obtener última posición para bus " + busId + ": " + e.getMessage());
             return null;
         }
+    }
+
+    public GPSData obtenerUltimaUbicacionBus(Long busId) {
+        return gpsDataRepositorio.findFirstByBusIdOrderByTiempoDesc(busId);
     }
 
     @Override

@@ -1,0 +1,65 @@
+.table-container {
+  padding: 20px;
+  margin: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: calc(100% - 40px);
+  overflow-y: auto;
+
+  h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+  }
+
+  .loading, .error, .no-data {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .error {
+    color: #dc3545;
+  }
+
+  .proxima-parada {
+  background-color: #e3f2fd;
+  font-weight: bold;
+  
+  &:hover {
+    background-color: #bbdefb !important;
+  }
+
+  td {
+    color: #1976d2;
+  }
+
+  .destino-badge {
+    background-color: #1976d2;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+  }
+}
+}

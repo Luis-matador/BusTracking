@@ -1,7 +1,9 @@
 package com.busTracking.repositorios;
 
 import com.busTracking.entidades.GPSData;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -31,4 +33,11 @@ public interface GPSDataRepositorio extends JpaRepository<GPSData, Long> {
     List<GPSData> findGPSDataByBusInTimeRange(@Param("busId") Long busId,
                                               @Param("inicio") LocalDateTime inicio,
                                               @Param("fin") LocalDateTime fin);
+
+    GPSData findFirstByBusIdOrderByTiempoDesc(Long busId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "ALTER TABLE gpsdata AUTO_INCREMENT = 1", nativeQuery = true)
+    void resetAutoIncrement();
 }

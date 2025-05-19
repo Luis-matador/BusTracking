@@ -1,6 +1,7 @@
 package com.busTracking.servicios;
 
 import com.busTracking.entidades.Bus;
+import com.busTracking.entidades.Parada;
 import com.busTracking.repositorios.BusRepositorio;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -121,5 +122,49 @@ public class BusServicioImpl implements BusServicio {
     public boolean tieneBusesDisponibles(Long rutaId) {
         Long cantidad = contarBusesPorRuta(rutaId);
         return cantidad > 0;
+    }
+    public Parada encontrarSiguienteParada(List<Parada> paradasRuta, Double latitudActual, Double longitudActual) {
+        if (paradasRuta == null || paradasRuta.isEmpty()) {
+            return null;
+        }
+
+        Parada paradaMasCercana = null;
+        double distanciaMinima = Double.MAX_VALUE;
+        int indiceMasCercana = -1;
+
+        // Encontrar la parada más cercana
+        for (int i = 0; i < paradasRuta.size(); i++) {
+            Parada parada = paradasRuta.get(i);
+            double distancia = calcularDistancia(
+                    latitudActual, longitudActual,
+                    parada.getLatitud(), parada.getLongitud()
+            );
+
+            if (distancia < distanciaMinima) {
+                distanciaMinima = distancia;
+                paradaMasCercana = parada;
+                indiceMasCercana = i;
+            }
+        }
+
+        // Devolver la siguiente parada en la ruta
+        if (indiceMasCercana < paradasRuta.size() - 1) {
+            return paradasRuta.get(indiceMasCercana + 1);
+        }
+
+        // Si es la última parada, devolver null o la primera parada si es circular
+        return null;
+    }
+
+    private double calcularDistancia(double lat1, double lon1, double lat2, double lon2) {
+        // Fórmula de Haversine para calcular distancia entre coordenadas
+        double R = 6371; // Radio de la Tierra en km
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLon/2) * Math.sin(dLon/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
     }
 }

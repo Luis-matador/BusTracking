@@ -1,14 +1,29 @@
-<div class="container mt-4">
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header bg-primary text-white">
-          <h2>Bus Tracking</h2>
-        </div>
-        <div class="card-body">
-          <app-map></app-map>
-        </div>
-      </div>
+<header class="main-header">
+  <div class="header-left">
+    <button *ngIf="vistaActual" class="back-button" (click)="volverInicio()">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+  </div>
+  <h1>Bus Tracking</h1>
+  <div class="menu-container">
+    <button class="menu-button" (click)="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="menu-dropdown" [class.show]="menuVisible">
+      <a (click)="mostrarRutas()" class="menu-item">Rutas</a>
+      <a (click)="mostrarBuses()" class="menu-item">Autobúses</a>
+      <a (click)="mostrarConductores()" class="menu-item">Conductores</a>
     </div>
   </div>
+</header>
+
+<div class="container-fluid">
+  <app-map *ngIf="!vistaActual"></app-map>
+  <app-rutas-table *ngIf="vistaActual === 'rutas'"></app-rutas-table>
+  <app-buses-table *ngIf="vistaActual === 'buses'"></app-buses-table>
+  <app-conductores-table *ngIf="vistaActual === 'conductores'"></app-conductores-table>
 </div>
+
+<footer class="main-footer">
+  <p>&copy; 2024 Bus Tracking. Todos los derechos reservados.</p>
+</footer>
