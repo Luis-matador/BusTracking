@@ -1,0 +1,51 @@
+<div class="table-container">
+  <h2>Rutas Disponibles</h2>
+  
+  <div *ngIf="loading" class="loading">
+    Cargando rutas...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && rutas.length > 0" class="rutas-list">
+    <div *ngFor="let ruta of rutas" class="ruta-item">
+      <div class="ruta-header">
+        <table>
+          <tr>
+            <td><strong>ID:</strong> {{ ruta.id }}</td>
+            <td><strong>Nombre:</strong> {{ ruta.nombre }}</td>
+            <td><strong>Información:</strong> {{ ruta.info }}</td>
+          </tr>
+        </table>
+      </div>
+      
+      <div class="paradas-container" *ngIf="ruta.paradas?.length">
+  <h3>Paradas de la ruta</h3>
+  <table class="paradas-table">
+    <thead>
+      <tr>
+        <th>Orden</th>
+        <th>Nombre</th>
+      </tr>
+    </thead>
+    <tbody>
+  <tr *ngFor="let parada of ruta.paradas" 
+    [class.proxima-parada]="isParadaDestino(parada)">
+  <td>{{ parada.orden }}</td>
+  <td>{{ parada.nombre }}</td>
+  <td *ngIf="isParadaDestino(parada)">
+    <span class="destino-badge">Próxima parada</span>
+  </td>
+</tr>
+</tbody>
+  </table>
+</div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && rutas.length === 0" class="no-data">
+    No hay rutas disponibles
+  </div>
+</div>

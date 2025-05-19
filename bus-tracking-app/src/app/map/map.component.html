@@ -1,6 +1,6 @@
-<div *ngIf="isBrowser">
-  <!-- Controles del mapa -->
-  <div class="controls-container" *ngIf="mapaCargado">
+<div class="main-container" *ngIf="isBrowser">
+  <!-- Menú lateral -->
+  <div class="sidebar">
     <form [formGroup]="filtroForm">
       <div class="form-group">
         <label for="linea-filter">Filtrar por línea:</label>
@@ -21,16 +21,17 @@
           </option>
         </select>
       </div>
+
+      <div class="seguimiento-activo" *ngIf="seguimientoActivado">
+        <span>Siguiendo bus {{ getBusNombre(busSeleccionadoId) }}</span>
+      </div>
     </form>
-    
-    <div class="seguimiento-activo" *ngIf="seguimientoActivado">
-      <span>Siguiendo bus {{ getBusNombre(busSeleccionadoId) }}</span>
-      <button (click)="desactivarSeguimiento()">Detener</button>
-    </div>
   </div>
-  
+
   <!-- Contenedor del mapa -->
-  <div id="map"></div>
+  <div class="map-container">
+    <div id="map"></div>
+  </div>
 </div>
 
 <div *ngIf="!isBrowser" class="map-placeholder">

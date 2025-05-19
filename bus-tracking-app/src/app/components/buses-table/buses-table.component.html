@@ -1,0 +1,46 @@
+<div class="table-container">
+  <h2>Autobuses Disponibles</h2>
+  
+  <div *ngIf="loading" class="loading">
+    Cargando autobuses...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && buses.length > 0" class="buses-list">
+    <div *ngFor="let bus of buses" class="bus-item">
+      <div class="bus-header">
+        <table>
+          <tr>
+            <td><strong>ID:</strong> {{ bus.id }}</td>
+            <td><strong>Matrícula:</strong> {{ bus.matricula }}</td>
+            <td><strong>Marca:</strong> {{ bus.marca }}</td>
+            <td><strong>Modelo:</strong> {{ bus.modelo }}</td>
+            <td><strong>Capacidad:</strong> {{ bus.capacidad }} pasajeros</td>
+          </tr>
+        </table>
+      </div>
+      
+      <div class="details-container">
+        <div *ngIf="bus.conductor" class="conductor-info">
+          <h4>Conductor Asignado</h4>
+          <p>{{ bus.conductor.nombre }} {{ bus.conductor.apellido }}</p>
+          <p>DNI: {{ bus.conductor.dni }}</p>
+          <p>Tel: {{ bus.conductor.tel }}</p>
+        </div>
+
+        <div *ngIf="bus.ruta" class="ruta-info">
+          <h4>Ruta Actual</h4>
+          <p>{{ bus.ruta.nombre }}</p>
+          <p>{{ bus.ruta.info }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && buses.length === 0" class="no-data">
+    No hay autobuses disponibles
+  </div>
+</div>

@@ -1,0 +1,37 @@
+<div class="table-container">
+  <h2>Conductores</h2>
+  
+  <div *ngIf="loading" class="loading">
+    Cargando conductores...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && conductores.length > 0" class="conductores-list">
+    <div *ngFor="let conductor of conductores" class="conductor-item">
+      <div class="conductor-header">
+        <table>
+          <tr>
+            <td><strong>ID:</strong> {{ conductor.id }}</td>
+            <td><strong>Nombre:</strong> {{ conductor.nombre }} {{ conductor.apellido }}</td>
+            <td><strong>DNI:</strong> {{ conductor.dni }}</td>
+            <td><strong>Teléfono:</strong> {{ conductor.tel }}</td>
+          </tr>
+        </table>
+      </div>
+      
+      <div *ngIf="conductor.busAsignado" class="bus-asignado">
+        <h4>Bus Asignado</h4>
+        <p><strong>ID:</strong> {{ conductor.busAsignado.id }}</p>
+        <p><strong>Marca:</strong> {{ conductor.busAsignado.marca }}</p>
+        <p><strong>Modelo:</strong> {{ conductor.busAsignado.modelo }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && conductores.length === 0" class="no-data">
+    No hay conductores disponibles
+  </div>
+</div>

@@ -1,0 +1,57 @@
+.table-container {
+  padding: 20px;
+  margin: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+  h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .conductores-list {
+    .conductor-item {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+
+      .conductor-header {
+        border-bottom: 2px solid #eee;
+
+        table {
+          width: 100%;
+          td {
+            padding: 8px;
+          }
+        }
+      }
+
+      .bus-asignado {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 4px;
+        margin-top: 10px;
+
+        h4 {
+          color: #666;
+          margin-bottom: 10px;
+        }
+
+        p {
+          margin: 5px 0;
+        }
+      }
+    }
+  }
+
+  .loading, .error, .no-data {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .error {
+    color: #dc3545;
+  }
+}

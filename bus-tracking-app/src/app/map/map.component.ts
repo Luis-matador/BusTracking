@@ -19,21 +19,6 @@ interface GPSDataDTO {
   rutaNombre: string;
 }
 
-
-interface GPSData {
-  id: number;
-  latitud: number;
-  longitud: number;
-  velocidad: number;
-  direccion: number;
-  tiempo: string;
-  bus: {
-    id: number;
-    nombre: string;
-    linea: string;
-  };
-}
-
 @Component({
   selector: 'app-map',
   standalone: true,
@@ -46,9 +31,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   private map: L.Map | null = null;
   private stompClient: Client | null = null;
   private busMarkers: Map<number, L.Marker> = new Map();
-  private busRotations: Map<number, number> = new Map(); // Para guardar la rotación actual de cada bus
   
-  // Mapa para almacenar los marcadores por ID de bus
   private marcadores: { [busId: number]: L.Marker } = {};
   
   public busesDisponibles: {id: number, nombre: string, linea: string}[] = [];
@@ -58,13 +41,8 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   public busSeleccionadoId: number | null = null;
   public mapaCargado = false;
   
-  // URL del backend - ajusta según tu configuración
   private apiUrl = 'http://localhost:8080';
   public isBrowser: boolean;
-
-  // Configuración de animación
-  private animationDuration = 1000; // duración de la animación en ms
-  private lastPositions: Map<number, L.LatLng> = new Map(); // últimas posiciones conocidas
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
@@ -78,7 +56,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Configuración del formulario
     this.filtroForm.get('linea')?.valueChanges.subscribe(value => {
       this.filtrarPorLinea(value);
     });
@@ -98,7 +75,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (this.isBrowser) {
-      // Inicializar el mapa después de que la vista se haya cargado
       setTimeout(() => {
         this.initMap();
       }, 100);
@@ -114,31 +90,25 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private initMap(): void {
     try {
-      // Asegurar que el contenedor del mapa existe
       const mapContainer = document.getElementById('map');
       if (!mapContainer) {
         console.error('El contenedor del mapa no existe');
         return;
       }
 
-      // Inicializar el mapa en Sevilla Este
       this.map = L.map('map', {
         zoomControl: false,
       }).setView([37.3943, -5.9332], 14);
       
-      // Añadir la capa de mosaicos
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(this.map);
       
-      // Añadir controles adicionales
       L.control.zoom({ position: 'bottomright' }).addTo(this.map);
       L.control.scale({ position: 'bottomleft', imperial: false }).addTo(this.map);
       
-      // Marcar que el mapa se ha cargado
       this.mapaCargado = true;
       
-      // Conectar al WebSocket después de que el mapa se haya inicializado
       if (this.isBrowser) {
         this.conectarWebSocket();
       }
@@ -159,11 +129,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     try {
       console.log('Intentando conectar al WebSocket...');
       
-      // URL del WebSocket
       const wsUrl = `ws://${window.location.hostname}:8080/ws-buses`;
       console.log('URL de conexión WebSocket:', wsUrl);
       
-      // Configurar el cliente Stomp directamente con la URL WebSocket
       this.stompClient = new Client({
         brokerURL: wsUrl,
         debug: (str) => {
@@ -174,12 +142,9 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         heartbeatOutgoing: 4000
       });
 
-      // Fallback para navegadores que no soporten WebSocket nativo
-      // Cambiar a esta configuración si la conexión directa no funciona
       if (window.location.protocol === 'http:') {
         console.log('Usando SockJS como fallback...');
         
-        // Sobrescribir la configuración para usar SockJS
         const socketUrl = `http://${window.location.hostname}:8080/ws-buses`;
         this.stompClient.configure({
           webSocketFactory: () => {
@@ -191,7 +156,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
       this.stompClient.onConnect = (frame) => {
         console.log('Conectado a WebSocket:', frame);
         
-        // Suscribirse al canal de posiciones de buses
         this.stompClient?.subscribe('/topic/posiciones-buses', (message) => {
           try {
             console.log('Mensaje recibido:', message.body);
@@ -203,7 +167,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
           }
         });
         
-        // Solicitar posiciones iniciales al conectar
         console.log('Solicitando posiciones iniciales...');
         this.stompClient?.publish({
           destination: '/app/solicitar-posiciones',
@@ -249,19 +212,16 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
         return;
       }
 
-      // Actualizar o crear marcador
       if (this.marcadores[posicion.busId]) {
         const latlng = L.latLng(posicion.latitud, posicion.longitud);
         this.marcadores[posicion.busId].setLatLng(latlng);
         
-        // Actualiza también el popup
         this.marcadores[posicion.busId].bindPopup(
           `<b>${posicion.busMatricula}</b><br>
            ${posicion.rutaNombre}<br>
            Velocidad: ${Math.round(posicion.velocidad)} km/h`
         );
       } else {
-        // Si no existe, crear nuevo marcador
         console.log(`Creando nuevo marcador para el bus ID: ${posicion.busId}`);
         
         if (!this.map) {
@@ -290,13 +250,11 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  // Método para actualizar la lista de buses desde el nuevo formato DTO
   private actualizarListaBusesDesdeDTO(posiciones: GPSDataDTO[]): void {
     const busesMap = new Map<number, {id: number, nombre: string, linea: string}>();
     const lineasSet = new Set<string>();
     
     posiciones.forEach(posicion => {
-      // Extraer identificador de línea del nombre de la ruta
       const lineaMatch = posicion.rutaNombre.match(/Línea\s+([^:]+)/);
       const linea = lineaMatch ? lineaMatch[1].trim() : 'Desconocida';
       
@@ -312,66 +270,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.busesDisponibles = Array.from(busesMap.values());
     this.lineasDisponibles = Array.from(lineasSet);
   }
-
-  private crearIconoBus(linea: string, rotacion: number): L.DivIcon {
-    const color = this.obtenerColorLinea(linea);
-    
-    return L.divIcon({
-      html: `
-        <div class="bus-marker" style="background-color: ${color}; transform: rotate(${rotacion}deg)">
-          <img src="assets/bus-icons/bus-icon.svg" alt="Bus" class="bus-icon">
-          <span class="linea-numero">${linea}</span>
-        </div>
-      `,
-      className: 'custom-div-icon',
-      iconSize: [40, 40],
-      iconAnchor: [20, 20]
-    });
-  }
-
-  private actualizarIconoRotado(marker: L.Marker, linea: string, rotacion: number): void {
-    const icon = this.crearIconoBus(linea, rotacion);
-    marker.setIcon(icon);
-  }
-
-  private actualizarListaBuses(posiciones: GPSData[]): void {
-    // Actualizar lista de buses disponibles
-    const busesMap = new Map<number, {id: number, nombre: string, linea: string}>();
-    const lineasSet = new Set<string>();
-    
-    posiciones.forEach(posicion => {
-      const bus = posicion.bus;
-      busesMap.set(bus.id, { id: bus.id, nombre: bus.nombre, linea: bus.linea });
-      lineasSet.add(bus.linea);
-    });
-    
-    this.busesDisponibles = Array.from(busesMap.values());
-    this.lineasDisponibles = Array.from(lineasSet);
-  }
-
-  private crearContenidoPopup(posicion: GPSData): string {
-    const fecha = new Date(posicion.tiempo).toLocaleString();
-    return `
-      <div class="bus-popup">
-        <h3>Bus ${posicion.bus.nombre}</h3>
-        <p><strong>Línea:</strong> ${posicion.bus.linea}</p>
-        <p><strong>Velocidad:</strong> ${posicion.velocidad.toFixed(1)} km/h</p>
-        <p><strong>Última actualización:</strong> ${fecha}</p>
-        <button class="seguir-bus" data-bus-id="${posicion.bus.id}">Seguir este bus</button>
-      </div>
-    `;
-  }
-
-  private obtenerColorLinea(linea: string): string {
-    const colores = [
-      '#FF5733', '#33FF57', '#3357FF', '#F033FF', '#FF33A1',
-      '#33FFF5', '#F5FF33', '#FF8C33', '#8C33FF', '#33FFCE'
-    ];
-    
-    const indice = parseInt(linea.replace(/\D/g, ''), 10) % colores.length;
-    return colores[indice] || '#3388ff';
-  }
-
+  
   public filtrarPorLinea(linea: string): void {
     if (!this.map) return;
 
@@ -395,7 +294,6 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     this.seguimientoActivado = false;
   }
 
-  // Nueva función para obtener el nombre del bus seleccionado para mostrar en la UI
   public getBusNombre(busId: number | null): string {
     if (!busId) return '';
     const bus = this.busesDisponibles.find(b => b.id === busId);
