@@ -15,5 +15,5 @@ public interface SimulacionServicio {
 
     void detenerSimulacion();
 
-    List<Bus> listarTodosLosBuses();
+
 }

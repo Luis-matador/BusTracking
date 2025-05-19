@@ -53,7 +53,6 @@ public class SimulacionServicioImpl implements SimulacionServicio {
 
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
-        // Damos un pequeño tiempo para asegurar que todas las dependencias estén listas
         try {
             // Esperar un segundo para asegurar que todas las dependencias estén inicializadas
             Thread.sleep(1000);
@@ -264,21 +263,5 @@ public class SimulacionServicioImpl implements SimulacionServicio {
             System.err.println("Error al enviar posiciones por WebSocket: " + e.getMessage());
             e.printStackTrace();
         }
-    }
-
-
-    @Override
-    public List<Bus> listarTodosLosBuses() {
-        List<Bus> buses = busRepositorio.findAll();
-        System.out.println("Buses en la base de datos: " + buses.size());
-
-        // Imprimir detalles de cada bus para depuración
-        for (Bus bus : buses) {
-            System.out.println("Bus ID: " + bus.getId() +
-                    ", Matrícula: " + bus.getMatricula() +
-                    ", Ruta: " + (bus.getRuta() != null ? bus.getRuta().getNombre() : "sin ruta"));
-        }
-
-        return buses;
     }
 }

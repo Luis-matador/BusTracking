@@ -9,6 +9,10 @@ import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDateTime;
 
+/**
+ * Entidad que almacena los datos de ubicación GPS de los autobuses.
+ * Registra la posición, velocidad, dirección y tiempo de cada lectura GPS.
+ */
 @Entity
 public class GPSData {
 
@@ -22,6 +26,10 @@ public class GPSData {
     private Double velocidad;       // Velocidad del autobús (km/h)
     private Double direccion;       // Dirección en grados (0-360)
 
+    /**
+     * Referencia al autobús al que pertenecen estos datos GPS.
+     * Se excluye de la serialización JSON para evitar ciclos.
+     */
     @ManyToOne // Relación con el autobús
     @JsonIgnore
     private Bus bus;

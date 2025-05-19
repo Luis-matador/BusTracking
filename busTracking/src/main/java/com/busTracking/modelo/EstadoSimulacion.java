@@ -33,7 +33,7 @@ public class EstadoSimulacion {
         double progresoAdicional = distanciaRecorrida / distanciaSegmento;
         progresoSegmento += progresoAdicional;
 
-        // Resetear bandera de llegada
+        // Resetear objetivo de llegada
         llegadaParada = false;
 
         // Si hemos completado el segmento, avanzar a la siguiente parada
@@ -57,10 +57,7 @@ public class EstadoSimulacion {
         return paradas.get(indiceParadaActual);
     }
 
-    public Parada getParadaSiguiente() {
-        int indiceSiguiente = (indiceParadaActual + 1) % paradas.size();
-        return paradas.get(indiceSiguiente);
-    }
+    public Parada getParadaSiguiente() {int indiceSiguiente = (indiceParadaActual + 1) % paradas.size();return paradas.get(indiceSiguiente);}
 
     public double getProgresoSegmento() {
         return progresoSegmento;
@@ -78,11 +75,13 @@ public class EstadoSimulacion {
         this.llegadaParada = llegadaParada;
     }
 
+    // Convertimos la distancia en km a metros
     private double calcularDistanciaEnMetros(double lat1, double lon1, double lat2, double lon2) {
-        // Convertimos la distancia en km a metros multiplicando por 1000
         return calcularDistanciaKm(lat1, lon1, lat2, lon2) * 1000;
     }
-
+    /**
+     * Calcula distancia en km entre dos puntos usando fórmula haversine
+     */
     private double calcularDistanciaKm(double lat1, double lon1, double lat2, double lon2) {
         final int RADIO_TIERRA = 6371;
 

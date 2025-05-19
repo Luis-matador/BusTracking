@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class JacksonConfig {
 
+     // Configuración de Jackson para manejar correctamente la serialización de fechas y horas en JSON.
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer addJavaTimeModule() {
         return builder -> builder.modules(new JavaTimeModule());

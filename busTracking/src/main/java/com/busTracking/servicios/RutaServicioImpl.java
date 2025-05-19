@@ -149,11 +149,6 @@ public class RutaServicioImpl implements RutaServicio {
     }
 
     @Override
-    public long contarRutas() {
-        return rutaRepositorio.count();
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<Ruta> obtenerRutasConParadas() {
         return rutaRepositorio.findAll().stream().filter(ruta -> ruta.getParadas() != null && !ruta.getParadas().isEmpty()).collect(Collectors.toList());
