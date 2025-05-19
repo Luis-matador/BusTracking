@@ -7,6 +7,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 
+/**
+ * Entidad que representa a un conductor en el sistema.
+ * Almacena información personal del conductor y su relación
+ * con el autobús que tiene asignado.
+ */
 @Entity
 public class Conductor {
 
@@ -19,7 +24,11 @@ public class Conductor {
     private String dni;
     private String tel;
 
-    @OneToOne // Relación con el bus asignado
+    /**
+     * Relación uno a uno con el autobús asignado al conductor.
+     * Se evita la serialización circular con JsonIgnoreProperties.
+     */
+    @OneToOne
     @JsonIgnoreProperties("conductor")
     private Bus busAsignado;
 

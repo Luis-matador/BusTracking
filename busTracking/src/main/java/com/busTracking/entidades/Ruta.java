@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
 
+/**
+ * Entidad que representa una ruta de autobús en el sistema.
+ * Contiene la información de la ruta y gestiona sus relaciones
+ * con paradas y autobuses asignados.
+ */
 @Entity
 public class Ruta {
 
@@ -11,18 +16,25 @@ public class Ruta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;     // Nombre de la ruta
-    private String info;       // Información de la ruta
+    private String nombre;
+    private String info;
 
+    /**
+     * Lista de paradas que conforman la ruta.
+     * Se eliminan en cascada si se elimina la ruta.
+     */
     @OneToMany(mappedBy = "rutaAsociada", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("rutaAsociada")
-    private List<Parada> paradas;  // Paradas asociadas a esta ruta
+    private List<Parada> paradas;
 
+    /**
+     * Lista de autobuses asignados a esta ruta.
+     * Se eliminan en cascada si se elimina la ruta.
+     */
     @OneToMany(mappedBy = "ruta", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("ruta")
-    private List<Bus> buses;      // Autobuses asignados a esta ruta
+    private List<Bus> buses;
 
-    // Getters y Setters
     public Long getId() {
         return id;
     }

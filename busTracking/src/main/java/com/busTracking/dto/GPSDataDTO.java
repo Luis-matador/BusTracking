@@ -3,6 +3,11 @@ package com.busTracking.dto;
 import com.busTracking.entidades.GPSData;
 import java.time.LocalDateTime;
 
+/**
+ * Objeto de transferencia de datos (DTO) que representa la información
+ * GPS de un bus, incluyendo su ubicación, velocidad y datos relacionados.
+ * Se usa para enviar datos al cliente evitando referencias circulares.
+ */
 public class GPSDataDTO {
     private Long id;
     private Double latitud;
@@ -12,13 +17,15 @@ public class GPSDataDTO {
     private LocalDateTime tiempo;
     private Long busId;
     private String busMatricula;
-    private String rutaNombre;  // Solo incluimos el nombre de la ruta, no toda la entidad
+    private String rutaNombre;
 
-    // Constructor vacío necesario para la serialización
     public GPSDataDTO() {
     }
 
-    // Constructor que convierte desde la entidad
+    /**
+     * Crea un DTO a partir de una entidad GPSData,
+     * extrayendo la información necesaria del bus y su ruta.
+     */
     public GPSDataDTO(GPSData gpsData) {
         this.id = gpsData.getId();
         this.latitud = gpsData.getLatitud();
@@ -31,14 +38,12 @@ public class GPSDataDTO {
             this.busId = gpsData.getBus().getId();
             this.busMatricula = gpsData.getBus().getMatricula();
 
-            // Solo incluimos información básica de la ruta si existe
             if (gpsData.getBus().getRuta() != null) {
                 this.rutaNombre = gpsData.getBus().getRuta().getNombre();
             }
         }
     }
 
-    // Getters y setters
     public Long getId() {
         return id;
     }

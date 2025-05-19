@@ -157,7 +157,6 @@ public class BusServicioImpl implements BusServicio {
     }
 
     private double calcularDistancia(double lat1, double lon1, double lat2, double lon2) {
-        // Fórmula de Haversine para calcular distancia entre coordenadas
         double R = 6371; // Radio de la Tierra en km
         double dLat = Math.toRadians(lat2 - lat1);
         double dLon = Math.toRadians(lon2 - lon1);

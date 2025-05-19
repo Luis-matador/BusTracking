@@ -5,6 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
 
+/**
+ * Entidad que representa un autobús en el sistema.
+ * Almacena información básica del vehículo y sus relaciones
+ * con conductor, ruta y datos GPS.
+ */
 @Entity
 public class Bus {
 
@@ -17,18 +22,27 @@ public class Bus {
     private Integer capacidad;
     private String matricula;
 
-    @OneToOne(mappedBy = "busAsignado") // Relación con el conductor
+    /**
+     * Relación uno a uno con el conductor asignado al autobús
+     */
+    @OneToOne(mappedBy = "busAsignado")
     @JsonIgnoreProperties("busAsignado")
     private Conductor conductor;
 
-    @ManyToOne // Relación con la ruta
+    /**
+     * Relación con la ruta asignada al autobús
+     */
+    @ManyToOne
     @JsonIgnoreProperties("buses")
     private Ruta ruta;
 
+    /**
+     * Historial de datos GPS del autobús.
+     * Se eliminan en cascada si se elimina el autobús.
+     */
     @OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, orphanRemoval = true) // Relación con datos GPS
     private List<GPSData> datosGPS;
 
-    // Getters y Setters
     public long getId() {
         return id;
     }

@@ -16,8 +16,6 @@ public interface GPSDataServicio {
 
     GPSData obtenerUltimaPosicionPorBusId(Long busId);
 
-    List<GPSData> obtenerUltimasPosicionesPorBuses(List<Long> busIds);
-
     List<GPSData> obtenerGPSDataPorBusOrdenadoDesc(Long busId);
 
     List<GPSData> obtenerGPSDataPorBusEnRangoDeTiempo(Long busId, LocalDateTime inicio, LocalDateTime fin);

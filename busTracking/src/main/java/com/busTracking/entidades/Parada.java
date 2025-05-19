@@ -7,6 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
+/**
+ * Entidad que representa una parada de autobús en el sistema.
+ * Almacena la ubicación y orden de las paradas dentro de una ruta.
+ */
 @Entity
 public class Parada {
 
@@ -14,12 +18,16 @@ public class Parada {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nombre;          // Nombre de la parada
-    private Double latitud;         // Latitud geográfica de la parada
-    private Double longitud;        // Longitud geográfica de la parada
-    private Integer orden;          // Orden en que aparece en la ruta
+    private String nombre;
+    private Double latitud;
+    private Double longitud;
+    private Integer orden;
 
-    @ManyToOne // Relación con la ruta a la que pertenece la parada
+    /**
+     * Relación con la ruta a la que pertenece esta parada.
+     * Se evita la serialización circular con JsonIgnoreProperties.
+     */
+    @ManyToOne
     @JsonIgnoreProperties("paradas")
     private Ruta rutaAsociada;
 

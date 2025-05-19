@@ -131,18 +131,6 @@ public class GPSDataServicioImpl implements GPSDataServicio {
     }
 
     @Override
-    public List<GPSData> obtenerUltimasPosicionesPorBuses(List<Long> busIds) {
-        List<GPSData> resultado = new ArrayList<>();
-        for (Long busId : busIds) {
-            GPSData ultimaPosicion = obtenerUltimaPosicionPorBusId(busId);
-            if (ultimaPosicion != null) {
-                resultado.add(ultimaPosicion);
-            }
-        }
-        return resultado;
-    }
-
-    @Override
     public List<GPSData> obtenerGPSDataPorBusOrdenadoDesc(Long busId) {
         if (!busRepositorio.existsById(busId)) {
             throw new EntityNotFoundException("No se encontró bus con ID: " + busId);

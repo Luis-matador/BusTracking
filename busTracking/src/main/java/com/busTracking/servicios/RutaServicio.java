@@ -27,8 +27,6 @@ public interface RutaServicio {
 
     List<Ruta> obtenerInformacionBasica();
 
-    long contarRutas();
-
     List<Ruta> obtenerRutasConParadas();
 
     List<Ruta> obtenerRutasConBuses();
