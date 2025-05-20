@@ -1,7 +1,7 @@
 package com.busTracking.controladores;
 
-import com.busTracking.entidades.GPSData;
-import com.busTracking.servicios.GPSDataServicio;
+import com.busTracking.modelo.entidades.GPSData;
+import com.busTracking.servicios.interfaces.GPSDataServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;

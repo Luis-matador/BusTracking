@@ -1,6 +1,6 @@
-package com.busTracking.servicios;
-import com.busTracking.entidades.Bus;
-import com.busTracking.entidades.Parada;
+package com.busTracking.servicios.interfaces;
+import com.busTracking.modelo.entidades.Bus;
+import com.busTracking.modelo.entidades.Parada;
 
 import java.util.List;
 

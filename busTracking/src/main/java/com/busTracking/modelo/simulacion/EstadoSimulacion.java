@@ -1,7 +1,7 @@
-package com.busTracking.modelo;
+package com.busTracking.modelo.simulacion;
 
-import com.busTracking.entidades.Bus;
-import com.busTracking.entidades.Parada;
+import com.busTracking.modelo.entidades.Bus;
+import com.busTracking.modelo.entidades.Parada;
 
 import java.util.List;
 

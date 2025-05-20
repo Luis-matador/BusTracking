@@ -1,11 +1,11 @@
 package com.busTracking.controladores;
 
-import com.busTracking.entidades.Bus;
-import com.busTracking.entidades.GPSData;
-import com.busTracking.entidades.Parada;
-import com.busTracking.servicios.BusServicio;
-import com.busTracking.servicios.GPSDataServicio;
-import com.busTracking.servicios.ParadaServicio;
+import com.busTracking.modelo.entidades.Bus;
+import com.busTracking.modelo.entidades.GPSData;
+import com.busTracking.modelo.entidades.Parada;
+import com.busTracking.servicios.interfaces.BusServicio;
+import com.busTracking.servicios.interfaces.GPSDataServicio;
+import com.busTracking.servicios.interfaces.ParadaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

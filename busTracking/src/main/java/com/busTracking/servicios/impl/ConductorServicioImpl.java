@@ -1,7 +1,8 @@
-package com.busTracking.servicios;
+package com.busTracking.servicios.impl;
 
-import com.busTracking.entidades.Conductor;
+import com.busTracking.modelo.entidades.Conductor;
 import com.busTracking.repositorios.ConductorRepositorio;
+import com.busTracking.servicios.interfaces.ConductorServicio;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

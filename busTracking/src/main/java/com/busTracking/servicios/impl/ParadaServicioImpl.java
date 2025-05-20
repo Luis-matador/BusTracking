@@ -1,8 +1,9 @@
-package com.busTracking.servicios;
+package com.busTracking.servicios.impl;
 
-import com.busTracking.entidades.Parada;
+import com.busTracking.modelo.entidades.Parada;
 import com.busTracking.repositorios.ParadaRepositorio;
 import com.busTracking.repositorios.RutaRepositorio;
+import com.busTracking.servicios.interfaces.ParadaServicio;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

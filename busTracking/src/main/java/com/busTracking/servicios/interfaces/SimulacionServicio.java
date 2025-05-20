@@ -1,8 +1,6 @@
-package com.busTracking.servicios;
+package com.busTracking.servicios.interfaces;
 
-import com.busTracking.entidades.Bus;
-
-import java.util.List;
+import com.busTracking.modelo.entidades.Bus;
 
 public interface SimulacionServicio {
 

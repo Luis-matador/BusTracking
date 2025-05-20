@@ -1,7 +1,7 @@
 package com.busTracking.controladores;
 
-import com.busTracking.entidades.GPSData;
-import com.busTracking.servicios.GPSDataServicio;
+import com.busTracking.modelo.entidades.GPSData;
+import com.busTracking.servicios.interfaces.GPSDataServicio;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;

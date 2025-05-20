@@ -1,8 +1,8 @@
 package com.busTracking.controladores;
 
-import com.busTracking.entidades.Bus;
+import com.busTracking.modelo.entidades.Bus;
 import com.busTracking.repositorios.BusRepositorio;
-import com.busTracking.servicios.SimulacionServicio;
+import com.busTracking.servicios.interfaces.SimulacionServicio;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

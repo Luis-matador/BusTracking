@@ -1,12 +1,14 @@
-package com.busTracking.servicios;
+package com.busTracking.servicios.impl;
 
-import com.busTracking.dto.GPSDataDTO;
-import com.busTracking.entidades.Bus;
-import com.busTracking.entidades.GPSData;
-import com.busTracking.entidades.Parada;
-import com.busTracking.modelo.EstadoSimulacion;
+import com.busTracking.modelo.dto.GPSDataDTO;
+import com.busTracking.modelo.entidades.Bus;
+import com.busTracking.modelo.entidades.GPSData;
+import com.busTracking.modelo.entidades.Parada;
+import com.busTracking.modelo.simulacion.EstadoSimulacion;
 import com.busTracking.repositorios.BusRepositorio;
 import com.busTracking.repositorios.ParadaRepositorio;
+import com.busTracking.servicios.interfaces.GPSDataServicio;
+import com.busTracking.servicios.interfaces.SimulacionServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;

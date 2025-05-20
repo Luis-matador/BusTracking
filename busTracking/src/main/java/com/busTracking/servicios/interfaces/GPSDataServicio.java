@@ -1,6 +1,6 @@
-package com.busTracking.servicios;
+package com.busTracking.servicios.interfaces;
 
-import com.busTracking.entidades.GPSData;
+import com.busTracking.modelo.entidades.GPSData;
 
 import java.time.LocalDateTime;
 import java.util.List;

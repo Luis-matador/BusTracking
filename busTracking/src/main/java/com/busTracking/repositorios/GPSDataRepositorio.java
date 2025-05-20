@@ -1,6 +1,6 @@
 package com.busTracking.repositorios;
 
-import com.busTracking.entidades.GPSData;
+import com.busTracking.modelo.entidades.GPSData;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

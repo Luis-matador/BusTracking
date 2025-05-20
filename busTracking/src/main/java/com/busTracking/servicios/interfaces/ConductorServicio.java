@@ -1,6 +1,6 @@
-package com.busTracking.servicios;
+package com.busTracking.servicios.interfaces;
 
-import com.busTracking.entidades.Conductor;
+import com.busTracking.modelo.entidades.Conductor;
 
 import java.util.List;
 

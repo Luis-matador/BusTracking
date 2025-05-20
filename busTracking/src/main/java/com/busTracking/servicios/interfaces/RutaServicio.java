@@ -1,6 +1,6 @@
-package com.busTracking.servicios;
+package com.busTracking.servicios.interfaces;
 
-import com.busTracking.entidades.Ruta;
+import com.busTracking.modelo.entidades.Ruta;
 
 import java.util.List;
 import java.util.Optional;

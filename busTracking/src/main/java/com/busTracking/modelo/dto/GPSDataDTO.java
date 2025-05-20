@@ -1,6 +1,6 @@
-package com.busTracking.dto;
+package com.busTracking.modelo.dto;
 
-import com.busTracking.entidades.GPSData;
+import com.busTracking.modelo.entidades.GPSData;
 import java.time.LocalDateTime;
 
 /**

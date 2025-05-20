@@ -1,4 +1,4 @@
-package com.busTracking.entidades;
+package com.busTracking.modelo.entidades;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;

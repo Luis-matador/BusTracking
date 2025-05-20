@@ -1,9 +1,10 @@
-package com.busTracking.servicios;
+package com.busTracking.servicios.impl;
 
-import com.busTracking.dto.GPSDataDTO;
-import com.busTracking.entidades.GPSData;
+import com.busTracking.modelo.dto.GPSDataDTO;
+import com.busTracking.modelo.entidades.GPSData;
 import com.busTracking.repositorios.BusRepositorio;
 import com.busTracking.repositorios.GPSDataRepositorio;
+import com.busTracking.servicios.interfaces.GPSDataServicio;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
