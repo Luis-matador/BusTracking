@@ -144,30 +144,41 @@ Interfaces para acceso a datos mediante JPA:
 ## Anotaciones Utilizadas
 
 ### JPA (Persistencia)
-- `@Entity`: Define una clase como entidad que se mapea a una tabla en la base de datos
-- `@Id`: Marca un campo como clave primaria de la entidad
-- `@GeneratedValue`: Genera automáticamente valores para la clave primaria
-- `strategy = GenerationType.IDENTITY`: Usa auto-incremento de la base de datos
-
-### Relaciones JPA
-- `@OneToMany`: Define una relación uno a muchos
-- `mappedBy`: Indica el campo que es dueño de la relación
-- `cascade`: Define operaciones en cascada
-- `orphanRemoval`: Elimina registros vacíos
+- `@Entity`: Define una clase como entidad
+- `@Id`: Marca un campo como clave primaria
+- `@GeneratedValue`: Genera valores para la clave primaria
 - `@ManyToOne`: Define una relación muchos a uno
-- `@OneToOne`: Define una relación uno a uno
 
 ### Spring MVC
 - `@RestController`: Define un controlador REST
+- `@Controller`: Define un controlador tradicional
 - `@RequestMapping`: Define la ruta base de los endpoints
 - `@GetMapping`: Define un endpoint para peticiones GET
 - `@PostMapping`: Define un endpoint para peticiones POST
 - `@PutMapping`: Define un endpoint para peticiones PUT
 - `@DeleteMapping`: Define un endpoint para peticiones DELETE
 - `@PathVariable`: Obtiene variables de la URL
-- `@RequestParam`: Obtiene parámetros de la consulta
 - `@RequestBody`: Obtiene datos del cuerpo de la petición
 - `@Autowired`: Inyecta dependencias automáticamente
+
+### Transacciones y Programación
+- `@Transactional`: Gestiona transacciones de base de datos
+- `@Service`: Marca una clase como servicio
+- `@Repository`: Marca una clase como repositorio
+- `@Scheduled`: Programa la ejecución periódica
+- `@Configuration`: Define una clase de configuración
+- `@Bean`: Define un bean de Spring
+- `@EventListener`: Escucha eventos de Spring
+
+### WebSocket
+- `@MessageMapping`: Define un endpoint para mensajes WebSocket
+- `@SendTo`: Especifica el destino de los mensajes
+- `@EnableWebSocketMessageBroker`: Habilita el broker de mensajes
+- `@DestinationVariable`: Obtiene variables de la ruta de destino
+
+### Base de Datos
+- `@Query`: Define consultas personalizadas
+- `@Param`: Define parámetros en consultas
 
 ### Jackson (JSON)
 - `@JsonIgnoreProperties`: Ignora propiedades específicas al serializar/deserializar JSON
