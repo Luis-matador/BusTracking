@@ -1,0 +1,122 @@
+.table-container {
+  padding: 20px;
+  margin: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: calc(100% - 40px);
+  overflow-y: auto;
+
+  h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .usuarios-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .usuario-item {
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #fff;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #f8f9fa;
+      }
+
+      .usuario-info {
+        display: grid;
+        grid-template-columns: 60px 200px minmax(300px, 2fr) 50%;
+        align-items: center;
+        gap: 20px;
+
+        .id-field {
+          color: #666;
+          font-size: 0.9em;
+          
+          strong {
+            color: #333;
+          }
+        }
+
+        .nombre-field {
+          font-weight: 500;
+          color: #333;
+        }
+
+        .datos-field {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 15px;
+
+          .email {
+            color: #666;
+            margin-right: auto;
+          }
+
+          .admin-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            background-color: #e9ecef;
+            color: #666;
+            min-width: 100px;
+            text-align: center;
+            transition: all 0.2s ease;
+
+            &.is-admin {
+              background-color: #cce5ff;
+              color: #004085;
+            }
+          }
+        }
+
+        .acciones {
+          justify-self: end;
+          min-width: 120px;
+          display: flex;
+          gap: 10px;
+
+          button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+
+            &:hover {
+              opacity: 0.8;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .loading {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+  }
+
+  .error {
+    padding: 20px;
+    text-align: center;
+    color: #dc3545;
+    background-color: #f8d7da;
+    border-radius: 4px;
+  }
+
+  .no-data {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+  }
+}

@@ -1,0 +1,55 @@
+<div class="table-container">
+  <h2>Usuarios</h2>
+
+  <div *ngIf="loading" class="loading">
+    Cargando usuarios...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div class="usuarios-list" *ngIf="!loading && !error && usuarios.length > 0">
+    <div class="usuario-item" *ngFor="let usuario of usuarios">
+      <div class="usuario-info">
+        <div class="id-field">
+          <strong>#{{ usuario.id }}</strong>
+        </div>
+        <div class="nombre-field">
+          <ng-container *ngIf="editingId !== usuario.id; else editingNombre">
+            {{ usuario.nombre }} {{ usuario.apellido }}
+          </ng-container>
+          <ng-template #editingNombre>
+            <input [(ngModel)]="editingUser!.nombre" placeholder="Nombre">
+            <input [(ngModel)]="editingUser!.apellido" placeholder="Apellido">
+          </ng-template>
+        </div>
+        <div class="datos-field">
+          <ng-container *ngIf="editingId !== usuario.id; else editingEmail">
+            <span class="email">{{ usuario.email }}</span>
+          </ng-container>
+          <ng-template #editingEmail>
+            <input [(ngModel)]="editingUser!.email" placeholder="Email">
+          </ng-template>
+          <span class="admin-badge" [class.is-admin]="usuario.admin">
+            {{ usuario.admin ? 'Administrador' : 'Usuario' }}
+          </span>
+        </div>
+        <div class="acciones">
+          <ng-container *ngIf="editingId !== usuario.id; else editingButtons">
+            <button (click)="startEditing(usuario)">Editar</button>
+            <button (click)="usuario.id && eliminarUsuario(usuario.id)">Eliminar</button>
+          </ng-container>
+          <ng-template #editingButtons>
+            <button (click)="saveUser()">Guardar</button>
+            <button (click)="cancelEditing()">Cancelar</button>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && usuarios.length === 0" class="no-data">
+    No hay usuarios disponibles
+  </div>
+</div>

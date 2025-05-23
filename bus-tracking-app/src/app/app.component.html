@@ -1,18 +1,38 @@
 <header class="main-header">
-  <div class="header-left">
-    <button *ngIf="vistaActual" class="back-button" (click)="volverInicio()">
-      <i class="fas fa-arrow-left"></i>
-    </button>
-  </div>
-  <h1>Bus Tracking</h1>
-  <div class="menu-container">
-    <button class="menu-button" (click)="toggleMenu()">
-      <i class="fas fa-bars"></i>
-    </button>
-    <div class="menu-dropdown" [class.show]="menuVisible">
-      <a (click)="mostrarRutas()" class="menu-item">Rutas</a>
-      <a (click)="mostrarBuses()" class="menu-item">Autobúses</a>
-      <a (click)="mostrarConductores()" class="menu-item">Conductores</a>
+  <button *ngIf="vistaActual" class="back-button" (click)="volverInicio()">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+  <h1 class="header-title">Bus Tracking</h1>
+  
+  <div class="right-container">
+    <div class="menu-container">
+      <button class="menu-button" (click)="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="menu-dropdown" [class.show]="menuVisible">
+        <a (click)="mostrarRutas()" class="menu-item">Rutas</a>
+        <a (click)="mostrarBuses()" class="menu-item">Autobuses</a>
+        <a (click)="mostrarConductores()" class="menu-item">Conductores</a>
+        <a (click)="mostrarUsuarios()" class="menu-item" *ngIf="currentUser?.admin">Usuarios</a>
+      </div>
+    </div>
+
+    <div class="user-menu">
+      <button class="user-button" (click)="toggleUserMenu()">
+        <i class="fas fa-user"></i>
+        <span *ngIf="currentUser" class="user-name">{{ currentUser.nombre }}</span>
+      </button>
+      <div class="user-dropdown" [class.show]="userMenuVisible">
+        <div class="dropdown-content">
+          <ng-container *ngIf="!currentUser; else userMenu">
+            <a (click)="showLoginModal()" class="menu-item">Iniciar Sesión</a>
+            <a (click)="showRegisterModal()" class="menu-item">Registrarse</a>
+          </ng-container>
+          <ng-template #userMenu>
+            <a (click)="logout()" class="menu-item">Cerrar Sesión</a>
+          </ng-template>
+        </div>
+      </div>
     </div>
   </div>
 </header>
@@ -22,8 +42,69 @@
   <app-rutas-table *ngIf="vistaActual === 'rutas'"></app-rutas-table>
   <app-buses-table *ngIf="vistaActual === 'buses'"></app-buses-table>
   <app-conductores-table *ngIf="vistaActual === 'conductores'"></app-conductores-table>
+  <app-lista-usuarios *ngIf="vistaActual === 'usuarios' && currentUser?.admin"></app-lista-usuarios>
 </div>
 
-<footer class="main-footer">
-  <p>&copy; 2024 Bus Tracking. Todos los derechos reservados.</p>
+<!-- Login Modal -->
+<div class="modal" *ngIf="showLogin">
+  <div class="modal-content">
+    <h2>Iniciar Sesión</h2>
+    <form (ngSubmit)="login()">
+      <div class="form-group">
+        <input [(ngModel)]="loginForm.email" name="email" type="email" placeholder="Email" required>
+      </div>
+      <div class="form-group">
+        <input [(ngModel)]="loginForm.password" name="password" type="password" placeholder="Contraseña" required>
+      </div>
+      <div class="form-actions">
+        <button type="button" (click)="closeModal()">Cancelar</button>
+        <button type="submit">Iniciar Sesión</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal" *ngIf="showRegister">
+  <div class="modal-content">
+    <h2>Registro</h2>
+    <form (ngSubmit)="register()">
+      <div class="form-group">
+        <input [(ngModel)]="registerForm.nombre" name="nombre" type="text" placeholder="Nombre" required>
+      </div>
+      <div class="form-group">
+        <input [(ngModel)]="registerForm.apellido" name="apellido" type="text" placeholder="Apellido" required>
+      </div>
+      <div class="form-group">
+        <input [(ngModel)]="registerForm.email" name="email" type="email" placeholder="Email" required>
+      </div>
+      <div class="form-group">
+        <input [(ngModel)]="registerForm.password" name="password" type="password" placeholder="Contraseña" required>
+      </div>
+      <div class="form-group">
+        <label class="admin-checkbox">
+          <input type="checkbox" [(ngModel)]="registerForm.requestAdmin" name="requestAdmin">
+          Solicitar permisos de administrador
+        </label>
+      </div>
+      <div class="form-group admin-section" *ngIf="registerForm.requestAdmin">
+        <input [(ngModel)]="registerForm.adminPassword" name="adminPassword" type="password" placeholder="Contraseña de administrador">
+      </div>
+      <div class="form-actions">
+        <button type="button" (click)="closeModal()">Cancelar</button>
+        <button type="submit">Registrarse</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-content">
+    <p>© 2025 Bus Tracking. Todos los derechos reservados.</p>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+    </div>
+  </div>
 </footer>

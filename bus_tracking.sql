@@ -4,4 +4,3 @@ grant all privileges on bus_tracking.* to 'bus_admin'@'localhost';
 flush privileges;
 use bus_tracking;
 
-

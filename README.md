@@ -16,6 +16,7 @@ Antes de iniciar el proyecto, asegúrate de tener instalado:
 
 - Ejecuta el script SQL para crear la base de datos y el usuario
 - Copia el contenido de inserts.txt y pegalo en la base de datos para insertar los datos.
+- Contraseña Admin: 1234
 
 ## Tecnologías Utilizadas
 
@@ -66,6 +67,7 @@ Endpoints REST para:
 - `GPSDataControlador`: Recepción de datos de localización
 - `SimulacionControlador`: Control de la simulación del sistema
 - `WebSocketControlador`: Envío de actualizaciones en tiempo real
+- `UsuarioControlador`: Gestión de usuarios
 
 ### DTOs (`dto/`)
 Objetos de transferencia de datos:
@@ -78,6 +80,8 @@ Modelos de datos principales:
 - `Ruta`: Trayectos definidos (nombre, información, paradas)
 - `Parada`: Ubicaciones con coordenadas GPS (latitud, longitud, nombre, orden en ruta)
 - `GPSData`: Datos de localización en tiempo real
+- `Usuario`: Información del usuario (nombre, apellido, email, admin)
+
 
 ### Servicios (`servicios/`)
 Implementan la lógica:
@@ -87,6 +91,7 @@ Implementan la lógica:
 - `ParadaServicio`: Gestión de paradas
 - `GPSDataServicio`: Procesamiento de datos de localización
 - `SimulacionServicio`: Control de la simulación del sistema
+- `UsuarioServicio`: Gestión de usuarios
 
 ### Repositorios (`repositorios/`)
 Interfaces para acceso a datos mediante JPA:
@@ -95,6 +100,7 @@ Interfaces para acceso a datos mediante JPA:
 - `RutaRepositorio`: Acceso a rutas
 - `ParadaRepositorio`: Manejo de paradas
 - `GPSDataRepositorio`: Almacenamiento de datos GPS
+- `UsuarioRepositorio`: Gestión de datos de usuarios
 
 # Funcionamiento del Sistema de Seguimiento de Buses
 

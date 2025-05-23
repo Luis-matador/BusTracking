@@ -40,3 +40,7 @@ INSERT INTO parada (latitud, longitud, nombre, orden, ruta_asociada_id) VALUES
 (37.3977, -5.9221, 'Avenida de la Aeronáutica', 5, 3),
 (37.4001, -5.9288, 'Ciudad de Liria', 6, 3),
 (37.4018, -5.9265, 'Avenida de las Ciencias (Final)', 7, 3);
+
+INSERT INTO usuario (nombre, apellido, email, password, admin) VALUES ('Juan', 'Pérez', 'juan.perez@example.com', '1234', false);
+INSERT INTO usuario (nombre, apellido, email, password, admin) VALUES ('María', 'Gómez', 'maria.gomez@example.com', '1234', false);
+INSERT INTO usuario (nombre, apellido, email, password, admin) VALUES ('Carlos', 'Rodríguez', 'carlos.rodriguez@example.com', '1234', true);
