@@ -1,191 +1,88 @@
-# Sistema de Seguimiento de Buses de Sevilla
+# BusTracking · Seguimiento de autobuses de Sevilla en tiempo real
 
-## Requisitos Previos
+[![CI](https://github.com/Luis-matador/BusTracking/actions/workflows/ci.yml/badge.svg)](https://github.com/Luis-matador/BusTracking/actions/workflows/ci.yml)
 
-Antes de iniciar el proyecto, asegúrate de tener instalado:
+Aplicación full stack que simula una flota de autobuses urbanos de Sevilla y muestra su posición en un mapa en tiempo real. El backend calcula el movimiento de cada autobús entre paradas y envía las posiciones al navegador por WebSocket cada pocos segundos.
 
-- Java 17 o superior
-- MySQL 8.0 o superior
-- Node.js y NPM
-- Maven
-- Angular CLI (`npm install -g @angular/cli`)
+## Funcionalidades
 
-## Configuración Inicial
+- **Mapa en tiempo real** con Leaflet: posición, velocidad y próxima parada de cada autobús.
+- **Simulación de movimiento**: cada autobús recorre su ruta a ~30 km/h (±20 %), interpolando su posición entre paradas con la fórmula de Haversine.
+- **WebSocket (STOMP + SockJS)**: el servidor publica las posiciones en `/topic/posiciones-buses` y en un canal por autobús.
+- **Gestión de flota**: API REST para autobuses, conductores, rutas y paradas.
+- **Usuarios**: registro e inicio de sesión validados en el servidor, con contraseñas cifradas con BCrypt.
 
-### 1. Configuración de la Base de Datos
+## Stack
 
-- Ejecuta el script SQL para crear la base de datos y el usuario
-- Copia el contenido de inserts.txt y pegalo en la base de datos para insertar los datos.
-- Contraseña Admin: 1234
+| Capa | Tecnologías |
+| --- | --- |
+| Backend | Java 17, Spring Boot 3, Spring Web, Spring Data JPA (Hibernate), Spring WebSocket, Maven |
+| Frontend | Angular 19, TypeScript, Leaflet, STOMP.js / SockJS |
+| Base de datos | MySQL 8 (H2 en memoria para los tests) |
+| Calidad | JUnit 5, Mockito, MockMvc, GitHub Actions |
 
-## Tecnologías Utilizadas
+## Arquitectura del backend
 
-### Backend
-- **Java 17**: Lenguaje de programación principal
-- **Spring Boot**: Framework para desarrollo de aplicaciones
-- **Spring Data JPA**: Persistencia y manejo de datos
-- **Spring WebSocket**: Comunicación en tiempo real
-- **Maven**: Gestión de dependencias y construcción del proyecto
-- **MySQL**: Base de datos relacional
+```
+controladores/   REST y WebSocket (sin lógica de negocio)
+servicios/       interfaces + implementaciones con la lógica
+repositorios/    Spring Data JPA
+modelo/          entidades JPA, DTOs y estado de la simulación
+excepciones/     excepciones de negocio + @RestControllerAdvice que las traduce a 400/401/404/409
+```
 
-### Frontend
-- **Angular**: Framework para el desarrollo del cliente web
-- **TypeScript**: Lenguaje de programación tipado
-- **Node.js**: Entorno de ejecución para desarrollo
-- **npm**: Gestor de paquetes
-- **SockJS**: Cliente WebSocket
-- **Bootstrap**: Framework CSS para diseño responsive
+## Puesta en marcha
 
-### Herramientas de Desarrollo
-- **IntelliJ IDEA**: IDE principal para desarrollo backend
-- **VS Code**: Editor para desarrollo frontend
-- **MySQL Workbench**: Gestión de base de datos
-- **Postman**: Pruebas de API REST
-- **Git**: Control de versiones
+### 1. Base de datos
 
-### APIs y Servicios
-- **REST API**: Comunicación cliente-servidor
-- **WebSocket**: Actualizaciones en tiempo real
-- **JPA/Hibernate**: Mapeo objeto-relacional
-- **Jackson**: Serialización/deserialización JSON
+Ejecuta `bus_tracking.sql` en MySQL. Crea la base de datos y un usuario `bus_admin`; cambia antes su contraseña en el script. Después ejecuta los datos de ejemplo de `busTracking/src/main/resources/inserts.txt`.
 
-## Estructura del Backend
+### 2. Backend
 
-El sistema está organizado en capas para una mejor mantenibilidad:
+Las credenciales se leen de variables de entorno:
 
-### Configuración (`config/`)
-- `JacksonConfig`: Maneja la serialización de objetos JSON y evita referencias circulares
-- `WebConfig`: Configura CORS y endpoints web para la comunicación con el frontend
-- `WebSocketConfig`: Habilita comunicación en tiempo real para actualización de posiciones GPS
+| Variable | Descripción | Por defecto |
+| --- | --- | --- |
+| `DB_URL` | URL JDBC | `jdbc:mysql://localhost:3306/bus_tracking` |
+| `DB_USERNAME` | Usuario de MySQL | `bus_admin` |
+| `DB_PASSWORD` | Contraseña de MySQL | (vacía) |
+| `ADMIN_CODIGO` | Código para registrarse como administrador | (vacío: nadie puede) |
 
-### Controladores (`controladores/`)
-Endpoints REST para:
-- `BusControlador`: Gestión de la flota de autobuses
-- `ConductorControlador`: Administración del personal
-- `RutaControlador`: Control de líneas y trayectos
-- `ParadaControlador`: Gestión de puntos de parada
-- `GPSDataControlador`: Recepción de datos de localización
-- `SimulacionControlador`: Control de la simulación del sistema
-- `WebSocketControlador`: Envío de actualizaciones en tiempo real
-- `UsuarioControlador`: Gestión de usuarios
+```bash
+cd busTracking
+DB_PASSWORD=tu_contraseña mvn spring-boot:run
+```
 
-### DTOs (`dto/`)
-Objetos de transferencia de datos:
-- `GPSDataDTO`: Optimiza la transferencia de datos GPS
+La API queda en `http://localhost:8080/api`.
 
-### Entidades (`entidades/`)
-Modelos de datos principales:
-- `Bus`: Detalles del vehículo (capacidad, marca, matrícula, ruta asignada)
-- `Conductor`: Información del personal (DNI, nombre, apellido, teléfono, bus asignado)
-- `Ruta`: Trayectos definidos (nombre, información, paradas)
-- `Parada`: Ubicaciones con coordenadas GPS (latitud, longitud, nombre, orden en ruta)
-- `GPSData`: Datos de localización en tiempo real
-- `Usuario`: Información del usuario (nombre, apellido, email, admin)
+### 3. Frontend
 
+```bash
+cd bus-tracking-app
+npm install
+npx ng serve
+```
 
-### Servicios (`servicios/`)
-Implementan la lógica:
-- `BusServicio`: Gestión de buses y asignaciones
-- `ConductorServicio`: Administración de conductores
-- `RutaServicio`: Control de rutas y trayectos
-- `ParadaServicio`: Gestión de paradas
-- `GPSDataServicio`: Procesamiento de datos de localización
-- `SimulacionServicio`: Control de la simulación del sistema
-- `UsuarioServicio`: Gestión de usuarios
+Abre `http://localhost:4200`. Usuarios de ejemplo: `juan.perez@example.com` / `demo1234` (y el resto de `inserts.txt`, con la misma contraseña).
 
-### Repositorios (`repositorios/`)
-Interfaces para acceso a datos mediante JPA:
-- `BusRepositorio`: Operaciones CRUD para buses
-- `ConductorRepositorio`: Gestión de datos de conductores
-- `RutaRepositorio`: Acceso a rutas
-- `ParadaRepositorio`: Manejo de paradas
-- `GPSDataRepositorio`: Almacenamiento de datos GPS
-- `UsuarioRepositorio`: Gestión de datos de usuarios
+## API principal
 
-# Funcionamiento del Sistema de Seguimiento de Buses
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| POST | `/api/auth/registro` | Alta de usuario |
+| POST | `/api/auth/login` | Inicio de sesión |
+| GET | `/api/buses` | Autobuses de la flota |
+| GET | `/api/buses/{id}/destino` | Próxima parada de un autobús |
+| GET | `/api/rutas` | Rutas con sus paradas |
+| GET | `/api/conductores` | Conductores |
+| POST | `/api/simulacion/iniciar/{busId}` | Inicia la simulación de un autobús |
+| DELETE | `/api/simulacion/detener/{busId}` | Detiene la simulación de un autobús |
 
-## 1. Sistema de Simulación de Movimiento
+## Tests
 
-- Al iniciar la aplicación, se activa automáticamente la simulación para todos los buses
-- Cada bus sigue una ruta predefinida entre paradas
-- La simulación se ejecuta en ciclos de x segundos
-- Velocidad simulada: 30 km/h ± 20% de variación aleatoria
-- Cálculo de posición mediante interpolación entre paradas
-- La dirección se calcula según el rumbo entre paradas
+```bash
+cd busTracking
+mvn test
+```
 
-## 2. Gestión de Datos GPS
-- Cada actualización genera un nuevo registro GPS con:
-    - Coordenadas (latitud/longitud)
-    - Velocidad actual
-    - Dirección (0-360 grados)
-    - Timestamp
-    - Identificación del bus
-- Los datos se validan antes de almacenarse:
-    - Latitud: -90° a 90°
-    - Longitud: -180° a 180°
-    - Velocidad: valores positivos
-    - Dirección: 0° a 360°
-- Limpieza automática de datos GPS cada 30 segundos
-
-## 3. Comunicación en Tiempo Real
-- WebSocket envía actualizaciones cada x segundos
-- Dos tipos de canales:
-    - `/topic/posiciones-buses`: Todas las posiciones
-    - `/topic/posicion-bus/{busId}`: Posición específica
-- Se utilizan DTOs optimizados para la transferencia:
-    - Datos GPS básicos
-    - Información reducida del bus
-    - Nombre de ruta simplificado
-
-## 4. Control de la Simulación
-- Endpoints REST para gestión:
-    - Iniciar simulación por bus
-    - Detener simulación por bus
-    - Detener toda la simulación
-- Estado de simulación por bus:
-    - Progreso entre paradas (0-100%)
-    - Parada actual y siguiente
-    - Detección de llegada a paradas
-
-## Anotaciones Utilizadas
-
-### JPA (Persistencia)
-- `@Entity`: Define una clase como entidad
-- `@Id`: Marca un campo como clave primaria
-- `@GeneratedValue`: Genera valores para la clave primaria
-- `@ManyToOne`: Define una relación muchos a uno
-
-### Spring MVC
-- `@RestController`: Define un controlador REST
-- `@Controller`: Define un controlador tradicional
-- `@RequestMapping`: Define la ruta base de los endpoints
-- `@GetMapping`: Define un endpoint para peticiones GET
-- `@PostMapping`: Define un endpoint para peticiones POST
-- `@PutMapping`: Define un endpoint para peticiones PUT
-- `@DeleteMapping`: Define un endpoint para peticiones DELETE
-- `@PathVariable`: Obtiene variables de la URL
-- `@RequestBody`: Obtiene datos del cuerpo de la petición
-- `@Autowired`: Inyecta dependencias automáticamente
-
-### Transacciones y Programación
-- `@Transactional`: Gestiona transacciones de base de datos
-- `@Service`: Marca una clase como servicio
-- `@Repository`: Marca una clase como repositorio
-- `@Scheduled`: Programa la ejecución periódica
-- `@Configuration`: Define una clase de configuración
-- `@Bean`: Define un bean de Spring
-- `@EventListener`: Escucha eventos de Spring
-
-### WebSocket
-- `@MessageMapping`: Define un endpoint para mensajes WebSocket
-- `@SendTo`: Especifica el destino de los mensajes
-- `@EnableWebSocketMessageBroker`: Habilita el broker de mensajes
-- `@DestinationVariable`: Obtiene variables de la ruta de destino
-
-### Base de Datos
-- `@Query`: Define consultas personalizadas
-- `@Param`: Define parámetros en consultas
-
-### Jackson (JSON)
-- `@JsonIgnoreProperties`: Ignora propiedades específicas al serializar/deserializar JSON
-- `@JsonIgnore`: Excluye un campo de la serialización/deserialización JSON
+Incluye tests unitarios del servicio de usuarios (Mockito), tests del controlador de autenticación (MockMvc), tests de la lógica de simulación y un test de arranque del contexto con H2. GitHub Actions los ejecuta en cada push y compila también el frontend.
