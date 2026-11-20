@@ -1,0 +1,13 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Compilación
+busTracking/target/
+bus-tracking-app/dist/
+bus-tracking-app/.angular/
+node_modules/
+
+# Configuración local
+.env
