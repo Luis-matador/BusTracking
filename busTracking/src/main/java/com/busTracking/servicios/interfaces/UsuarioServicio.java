@@ -1,26 +1,28 @@
 package com.busTracking.servicios.interfaces;
 
-import com.busTracking.modelo.entidades.Usuario;
+import com.busTracking.modelo.dto.LoginRequest;
+import com.busTracking.modelo.dto.RegistroRequest;
+import com.busTracking.modelo.dto.UsuarioDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UsuarioServicio {
 
-    List<Usuario> obtenerTodosLosUsuarios();
+    List<UsuarioDTO> obtenerTodosLosUsuarios();
 
-    Optional<Usuario> obtenerUsuarioPorId(Long id);
+    UsuarioDTO obtenerUsuarioPorId(Long id);
 
-    Optional<Usuario> obtenerUsuarioPorEmail(String email);
+    UsuarioDTO obtenerUsuarioPorEmail(String email);
 
-    List<Usuario> obtenerUsuariosPorNombre(String nombre);
+    List<UsuarioDTO> obtenerUsuariosPorNombre(String nombre);
 
-    List<Usuario> obtenerUsuariosPorApellido(String apellido);
+    List<UsuarioDTO> obtenerUsuariosPorApellido(String apellido);
 
-    Usuario crearUsuario(Usuario usuario);
+    UsuarioDTO registrar(RegistroRequest request);
 
-    Usuario actualizarUsuario(Long id, Usuario usuario);
+    UsuarioDTO login(LoginRequest request);
+
+    UsuarioDTO actualizarUsuario(Long id, RegistroRequest request);
 
     void eliminarUsuario(Long id);
-
 }
