@@ -1,5 +1,7 @@
 package com.busTracking.servicios.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.busTracking.modelo.dto.GPSDataDTO;
 import com.busTracking.modelo.entidades.GPSData;
 import com.busTracking.repositorios.BusRepositorio;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Service
 public class GPSDataServicioImpl implements GPSDataServicio {
+
+    private static final Logger log = LoggerFactory.getLogger(GPSDataServicioImpl.class);
 
     private final GPSDataRepositorio gpsDataRepositorio;
     private final BusRepositorio busRepositorio;
@@ -66,8 +70,7 @@ public class GPSDataServicioImpl implements GPSDataServicio {
 
             messagingTemplate.convertAndSend("/topic/posiciones-buses", dtos);
         } catch (Exception e) {
-            System.err.println("Error al enviar actualizaciones periódicas: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error al enviar actualizaciones periódicas", e);
         }
     }
 
@@ -77,10 +80,9 @@ public class GPSDataServicioImpl implements GPSDataServicio {
         try {
             gpsDataRepositorio.deleteAll();
             gpsDataRepositorio.resetAutoIncrement();
-            System.out.println("Todos los datos de la tabla GPSData han sido eliminados.");
+            log.info("Todos los datos de la tabla GPSData han sido eliminados.");
         } catch (Exception e) {
-            System.err.println("Error al limpiar los datos de GPSData: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error al limpiar los datos de GPSData", e);
         }
     }
 
@@ -112,7 +114,7 @@ public class GPSDataServicioImpl implements GPSDataServicio {
     public GPSData obtenerUltimaPosicionPorBusId(Long busId) {
         try {
             if (!busRepositorio.existsById(busId)) {
-                System.err.println("No se encontró bus con ID: " + busId);
+                log.warn("No se encontró bus con ID: " + busId);
                 return null;
             }
             try {
@@ -122,7 +124,7 @@ public class GPSDataServicioImpl implements GPSDataServicio {
                 return gpsDataRepositorio.findTopByBusIdOrderByTiempoDesc(busId);
             }
         } catch (Exception e) {
-            System.err.println("Error al obtener última posición para bus " + busId + ": " + e.getMessage());
+            log.warn("Error al obtener última posición para bus " + busId + ": " + e.getMessage());
             return null;
         }
     }

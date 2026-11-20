@@ -1,5 +1,7 @@
 package com.busTracking.servicios.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.busTracking.modelo.dto.GPSDataDTO;
 import com.busTracking.modelo.entidades.Bus;
 import com.busTracking.modelo.entidades.GPSData;
@@ -24,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class SimulacionServicioImpl implements SimulacionServicio {
+
+    private static final Logger log = LoggerFactory.getLogger(SimulacionServicioImpl.class);
 
     private final ParadaRepositorio paradaRepositorio;
     private final GPSDataServicio gpsDataServicio;
@@ -62,7 +66,7 @@ public class SimulacionServicioImpl implements SimulacionServicio {
             iniciarSimulacionAutomatica();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            System.err.println("Error al esperar inicialización: " + e.getMessage());
+            log.warn("Error al esperar inicialización: " + e.getMessage());
         }
     }
 
@@ -73,25 +77,25 @@ public class SimulacionServicioImpl implements SimulacionServicio {
         try {
             // Verificamos que el repositorio no sea nulo antes de usarlo
             if (busRepositorio == null) {
-                System.err.println("ERROR: BusRepositorio no ha sido inyectado correctamente");
+                log.error("BusRepositorio no ha sido inyectado correctamente");
                 return;
             }
 
             List<Bus> buses = busRepositorio.findAll();
 
             if (buses.isEmpty()) {
-                System.out.println("ADVERTENCIA: No hay buses disponibles en la base de datos.");
+                log.warn("No hay buses disponibles en la base de datos.");
                 return;
             }
 
-            System.out.println("Iniciando simulación automática para " + buses.size() + " buses...");
+            log.info("Iniciando simulación automática para " + buses.size() + " buses...");
 
             for (Bus bus : buses) {
                 try {
                     iniciarSimulacionParaBus(bus);
-                    System.out.println("Simulación iniciada para bus ID: " + bus.getId() + ", Matrícula: " + bus.getMatricula());
+                    log.info("Simulación iniciada para bus ID: " + bus.getId() + ", Matrícula: " + bus.getMatricula());
                 } catch (IllegalStateException e) {
-                    System.err.println("No se pudo iniciar la simulación para el bus " + bus.getId() + ": " + e.getMessage());
+                    log.warn("No se pudo iniciar la simulación para el bus " + bus.getId() + ": " + e.getMessage());
                 }
             }
 
@@ -100,8 +104,7 @@ public class SimulacionServicioImpl implements SimulacionServicio {
                     1, INTERVALO_ENVIO_WEBSOCKET, TimeUnit.SECONDS);
 
         } catch (Exception e) {
-            System.err.println("Error al iniciar simulación automática: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error al iniciar simulación automática", e);
         }
     }
 
@@ -124,13 +127,13 @@ public class SimulacionServicioImpl implements SimulacionServicio {
             iniciarActualizacionesSimulacion();
         }
 
-        System.out.println("Simulación iniciada para bus ID: " + bus.getId());
+        log.info("Simulación iniciada para bus ID: " + bus.getId());
     }
 
     @Override
     public void detenerSimulacionParaBus(Long busId) {
         estadoSimulacionPorBus.remove(busId);
-        System.out.println("Simulación detenida para bus ID: " + busId);
+        log.info("Simulación detenida para bus ID: " + busId);
 
         if (estadoSimulacionPorBus.isEmpty()) {
             detenerSimulacion();
@@ -142,7 +145,7 @@ public class SimulacionServicioImpl implements SimulacionServicio {
         simulacionActiva = false;
         scheduler.shutdown();
         estadoSimulacionPorBus.clear();
-        System.out.println("Todas las simulaciones han sido detenidas");
+        log.info("Todas las simulaciones han sido detenidas");
     }
 
     private void iniciarActualizacionesSimulacion() {
@@ -150,7 +153,7 @@ public class SimulacionServicioImpl implements SimulacionServicio {
         scheduler.scheduleAtFixedRate(this::actualizarTodasLasSimulaciones,
                 0, INTERVALO_ACTUALIZACION, TimeUnit.SECONDS);
 
-        System.out.println("Actualizaciones de simulación iniciadas con intervalo de " + INTERVALO_ACTUALIZACION + " segundos");
+        log.info("Actualizaciones de simulación iniciadas con intervalo de " + INTERVALO_ACTUALIZACION + " segundos");
     }
 
     private void actualizarTodasLasSimulaciones() {
@@ -165,12 +168,11 @@ public class SimulacionServicioImpl implements SimulacionServicio {
                 actualizarPosicionBus(estado);
                 actualizados++;
             } catch (Exception e) {
-                System.err.println("Error actualizando bus " + busId + ": " + e.getMessage());
-                e.printStackTrace();
+                log.error("Error actualizando bus " + busId, e);
             }
         }
 
-        System.out.println("Actualizadas posiciones de " + actualizados + "/" + totalBuses + " buses");
+        log.debug("Actualizadas posiciones de " + actualizados + "/" + totalBuses + " buses");
     }
 
     private void actualizarPosicionBus(EstadoSimulacion estado) {
@@ -209,7 +211,7 @@ public class SimulacionServicioImpl implements SimulacionServicio {
         // Verificamos si ha llegado a una parada comparando antes y después
         if (paradaIndexAnterior != estado.getIndiceParadaActual() ||
                 (progresoAnterior >= 0.99 && estado.getProgresoSegmento() < 0.1)) {
-            System.out.println("Bus " + estado.getBus().getId() + " ha llegado a la parada: " +
+            log.info("Bus " + estado.getBus().getId() + " ha llegado a la parada: " +
                     estado.getParadaActual().getNombre());
         }
     }
@@ -254,16 +256,15 @@ public class SimulacionServicioImpl implements SimulacionServicio {
             }
 
             if (!posicionesDTO.isEmpty()) {
-                System.out.println("Enviando " + posicionesDTO.size() + " posiciones por WebSocket");
+                log.debug("Enviando " + posicionesDTO.size() + " posiciones por WebSocket");
                 messagingTemplate.convertAndSend("/topic/posiciones-buses", posicionesDTO);
             } else {
-                System.out.println("No hay posiciones para enviar por WebSocket");
+                log.debug("No hay posiciones para enviar por WebSocket");
                 messagingTemplate.convertAndSend("/topic/posiciones-buses", new ArrayList<>());
             }
 
         } catch (Exception e) {
-            System.err.println("Error al enviar posiciones por WebSocket: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Error al enviar posiciones por WebSocket", e);
         }
     }
 }
