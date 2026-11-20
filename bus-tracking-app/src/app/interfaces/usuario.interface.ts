@@ -3,6 +3,13 @@ export interface Usuario {
   nombre: string;
   apellido: string;
   email: string;
-  password?: string;
   admin: boolean;
+}
+
+export interface RegistroRequest {
+  nombre: string;
+  apellido: string;
+  email: string;
+  password: string;
+  codigoAdmin?: string;
 }

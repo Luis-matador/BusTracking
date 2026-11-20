@@ -7,7 +7,7 @@ import { ConductoresTableComponent } from './components/conductores-table/conduc
 import { ListaUsuariosComponent } from './components/lista-usuarios/lista-usuarios.component';
 import { WebsocketService } from './services/websocket.service';
 import { Subscription } from 'rxjs';
-import { Usuario } from './interfaces/usuario.interface';
+import { Usuario, RegistroRequest } from './interfaces/usuario.interface';
 import { ApiService } from './services/api.service';
 import { FormsModule } from '@angular/forms';
 
@@ -130,21 +130,16 @@ register() {
     return;
   }
 
-  if (this.registerForm.requestAdmin && this.registerForm.adminPassword !== '1234') {
-    alert('Contraseña de administrador incorrecta');
-    return;
-  }
-
-  const newUser: Usuario = {
+  const datos: RegistroRequest = {
     nombre: this.registerForm.nombre,
     apellido: this.registerForm.apellido,
     email: this.registerForm.email,
     password: this.registerForm.password,
-    admin: this.registerForm.requestAdmin && this.registerForm.adminPassword === '1234',
-    id: 0
+    // El servidor decide si el código de administrador es válido
+    codigoAdmin: this.registerForm.requestAdmin ? this.registerForm.adminPassword : undefined
   };
 
-  this.apiService.register(newUser).subscribe({
+  this.apiService.register(datos).subscribe({
     next: (user) => {
       this.currentUser = user;
       this.closeModal();
